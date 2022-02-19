@@ -34,6 +34,16 @@ public class UserService {
 		userMapper.insertUserHistory(user.getId());
 	}
 
+	public String signIn(String id, String password) {
+		User user = new User();
+		user.setId(id);
+		user.setPassword(password);
+		if(!userMapper.selectExistsUser(user)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id or Password is not correct");
+		}
+		return id;
+	}
+
 	@Transactional
 	public void changeTheCounselorStatus(String userId, String state) {
 		if(!userMapper.selectExistsUserId(userId)) {

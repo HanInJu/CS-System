@@ -53,5 +53,11 @@
         WHERE id = #{userId}
     </select>
 
+    <select id="selectExistsUser" parameterType="user" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM user
+                      WHERE id = #{id} AND password = #{password})
+    </select>
+
 
 </mapper>

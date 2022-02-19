@@ -1,5 +1,9 @@
 package com.heather.cs.user.controller;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +25,14 @@ public class UserController {
 	@PostMapping("/user")
 	public void registerUser(@RequestBody User user) {
 		userService.registerUser(user);
+	}
+
+	@GetMapping("/user/authorization")
+	public void signIn(HttpServletResponse response, @RequestParam String id, @RequestParam String password) {
+		String validId = userService.signIn(id, password);
+		Cookie userIdCookie = new Cookie("userIdCookie", validId);
+		userIdCookie.setMaxAge(3600);
+		response.addCookie(userIdCookie);
 	}
 
 	@PatchMapping("/user/counselor/{userId}/status")
