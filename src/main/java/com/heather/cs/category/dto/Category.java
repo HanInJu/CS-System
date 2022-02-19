@@ -19,6 +19,8 @@ public class Category {
 	private Long id;
     private Long parentId;
 	private String name;
+	private String useYn;
+	private int depth;
 
 	private List<Category> children;
 

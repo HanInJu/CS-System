@@ -7,5 +7,5 @@ import com.heather.cs.counsel.dto.Counsel;
 @Mapper
 public interface CounselMapper {
 	void insertCounsel(Counsel counsel);
-	void insertCounselHistory(Counsel counsel);
+	void insertCounselHistory(long counselId);
 }

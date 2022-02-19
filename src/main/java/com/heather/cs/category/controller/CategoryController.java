@@ -15,9 +15,9 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/category/{categoryId}/sub")
-    public List<Category> getSubCategory(@PathVariable Long categoryId) {
-        return categoryService.getSubCategory(categoryId);
+    @GetMapping("/category/{categoryId}/subcategory")
+    public List<Category> getSubcategory(@PathVariable long categoryId) {
+        return categoryService.getSubcategory(categoryId);
     }
 
     @GetMapping("/category/tree")

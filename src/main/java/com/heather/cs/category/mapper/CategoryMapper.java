@@ -8,7 +8,8 @@ import com.heather.cs.category.dto.Category;
 
 @Mapper
 public interface CategoryMapper {
-    boolean selectExistsCategory(Long categoryId);
-    List<Category> selectSubCategory(Long categoryId);
+    boolean selectExistsCategory(long categoryId);
+    List<Category> selectSubcategory(long categoryId);
+    boolean selectExistsChildCategory(long categoryId);
     List<Category> selectAllCategories();
 }

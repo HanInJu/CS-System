@@ -17,13 +17,13 @@ public class CounselService {
 
 	public void registerCounsel(Counsel counsel) {
 		if(!categoryMapper.selectExistsCategory(counsel.getCategoryId())) {
-			throw new IllegalArgumentException("Invalid Category Id");
+			throw new IllegalArgumentException("Invalid Category Id : " + counsel.getCategoryId());
 		}
 
 		counsel.setCreatorId("SYSTEM");
 		counsel.setModifierId("SYSTEM");
 		counsel.setStatus("OK");
 		counselMapper.insertCounsel(counsel);
-		counselMapper.insertCounselHistory(counsel);
+		counselMapper.insertCounselHistory(counsel.getId());
 	}
 }

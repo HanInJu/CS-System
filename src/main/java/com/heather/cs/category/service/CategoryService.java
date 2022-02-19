@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 
 import com.heather.cs.category.dto.Category;
 import com.heather.cs.category.mapper.CategoryMapper;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,12 +21,16 @@ public class CategoryService {
 
     private final CategoryMapper categoryMapper;
 
-    public List<Category> getSubCategory(Long categoryId) {
-        if(!categoryMapper.selectExistsCategory(categoryId)) { // 예외 발생 후에는 어떻게 되지?
-            throw new IllegalArgumentException("Invalid Category Id");
+    public List<Category> getSubcategory(long categoryId) {
+        if(!categoryMapper.selectExistsCategory(categoryId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid CategoryId : " + categoryId);
         }
 
-        return categoryMapper.selectSubCategory(categoryId);
+        if(!categoryMapper.selectExistsChildCategory(categoryId)) {
+            throw new ResponseStatusException(HttpStatus.OK, "The category is a lowest category : categoryId = " + categoryId);
+        }
+
+        return categoryMapper.selectSubcategory(categoryId);
     }
 
     public Category getAllCategoryTree() {

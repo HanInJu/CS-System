@@ -8,5 +8,8 @@ import com.heather.cs.user.dto.User;
 public interface UserMapper {
 	boolean selectExistsUserId(String userId);
 	void insertUser(User user);
-	void insertUserHistory(User user);
+	void insertUserHistory(String userId);
+	String selectUserRole(String userId);
+	void updateStatus(User user);
+	User selectUser(String userId);
 }
