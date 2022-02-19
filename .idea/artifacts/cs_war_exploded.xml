@@ -1,0 +1,62 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="cs:war exploded">
+    <output-path>$PROJECT_DIR$/target/spring-web</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>cs</module>
+        <packaging>war</packaging>
+        <unpackNestedArchives>false</unpackNestedArchives>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="cs" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:5.3.14" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-tx:5.3.14" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.27" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.11.4" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis-spring:2.0.6" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.5.9" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-dbcp2:2.9.0" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-pool2:2.10.0" />
+          <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.2" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.1" />
+          <element id="library" level="project" name="Maven: com.puppycrawl.tools:checkstyle:9.2.1" />
+          <element id="library" level="project" name="Maven: info.picocli:picocli:4.6.2" />
+          <element id="library" level="project" name="Maven: org.antlr:antlr4-runtime:4.9.3" />
+          <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.9.4" />
+          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.2" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:31.0.1-jre" />
+          <element id="library" level="project" name="Maven: com.google.guava:failureaccess:1.0.1" />
+          <element id="library" level="project" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" />
+          <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:3.0.2" />
+          <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:3.12.0" />
+          <element id="library" level="project" name="Maven: com.google.errorprone:error_prone_annotations:2.7.1" />
+          <element id="library" level="project" name="Maven: com.google.j2objc:j2objc-annotations:1.3" />
+          <element id="library" level="project" name="Maven: org.reflections:reflections:0.10.2" />
+          <element id="library" level="project" name="Maven: org.javassist:javassist:3.28.0-GA" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.32" />
+          <element id="library" level="project" name="Maven: net.sf.saxon:Saxon-HE:10.6" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/target/spring-web/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="cs/web/Web" />
+    </root>
+  </artifact>
+</component>
