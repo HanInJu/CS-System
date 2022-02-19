@@ -34,7 +34,7 @@ public class UserService {
 		userMapper.insertUserHistory(user.getId());
 	}
 
-	// Iteration-2
+	@Transactional
 	public void changeTheCounselorStatus(String userId, String state) {
 		if(!userMapper.selectExistsUserId(userId)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The userId does not exist : userId = " + userId);
@@ -54,7 +54,7 @@ public class UserService {
 		User user = userMapper.selectUser(userId);
 		String status = user.getStatus();
 		if(status.equals(state)) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "The counselor's status is already " + state);
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "The counselor's status is already " + state + " state : " + state);
 		}
 
 		user.setStatus(state);
