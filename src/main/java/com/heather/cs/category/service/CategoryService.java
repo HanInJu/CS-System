@@ -20,7 +20,7 @@ public class CategoryService {
 
     public List<Category> getSubCategory(Long categoryId) {
         if(!categoryMapper.selectExistsCategory(categoryId)) { // 예외 발생 후에는 어떻게 되지?
-            throw new IllegalArgumentException("유효하지 않은 categoryId 입니다.");
+            throw new IllegalArgumentException("Invalid Category Id");
         }
 
         return categoryMapper.selectSubCategory(categoryId);

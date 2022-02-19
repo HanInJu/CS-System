@@ -15,9 +15,12 @@ public class UserService {
 
 	public void registerUser(User user) {
 		if(userMapper.selectExistsUserId(user.getId())) {
-			throw new IllegalArgumentException("중복된 ID 입니다.");
+			throw new IllegalArgumentException("Duplicated Id");
 		}
 
+		user.setRole("COUNSELOR");
+		user.setStatus("AVAILABLE");
+		user.setUserYn("Y");
 		user.setCreatorId(user.getId());
 		user.setModifierId(user.getId());
 

@@ -1,0 +1,21 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heather.cs.counsel.mapper.CounselMapper">
+
+    <insert id="insertCounsel" parameterType="counsel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO counsel(category_id, title, content, customer_name, customer_email, status, creator_id, modifier_id, created_at, modified_at)
+        VALUES(#{categoryId}, #{title}, #{content}, #{customerName}, #{customerEmail}, #{status}, #{creatorId}, #{modifierId}, now(), now())
+    </insert>
+
+    <insert id="insertCounselHistory" parameterType="counsel">
+        INSERT INTO counsel_history(counsel_id, sequence, category_id, title, content, requestor_email, status, creator_id, created_at)
+        VALUES(#{id}, (SELECT a.seq
+                       FROM (SELECT COUNT(counsel_id) + 1 AS seq
+                             FROM counsel_history
+                             WHERE counsel_id = #{id}) AS a), #{categoryId}, #{title}, #{content}, #{customerEmail}, #{status}, #{modifierId}, (SELECT modified_at
+                                                                                                                                                FROM counsel
+                                                                                                                                                WHERE id = #{id}))
+    </insert>
+
+</mapper>

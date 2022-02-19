@@ -12,9 +12,9 @@ public class User {
 	private String id;
 	private String name;
 	private String password;
-	private String role = "COUNSELOR";
-	private String status = "AVAILABLE";
-	private String userYn = "Y";
+	private String role;
+	private String status;
+	private String userYn;
 	private String creatorId;
 	private String modifierId;
 }
