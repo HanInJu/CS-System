@@ -18,11 +18,11 @@
         WHERE c.id = #{counselId};
     </insert>
 
-    <select id="selectCounselsWithoutCounselor" parameterType="long" resultType="int">
-        SELECT COUNT(counsel.id)
-        FROM counsel
-        INNER JOIN category c on counsel.category_id = c.id
-        WHERE counsel.category_id = #{categoryId};
+    <select id="selectCounselsWithoutCounselor" parameterType="long" resultType="counsel">
+        SELECT co.id, co.category_id
+        FROM counsel co
+        INNER JOIN category c on co.category_id = c.id
+        WHERE co.category_id = #{categoryId} AND co.charger_id IS NULL;
     </select>
 
 </mapper>

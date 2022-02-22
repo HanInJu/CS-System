@@ -53,7 +53,7 @@ public class CounselService {
 
 	}
 
-	public int getCounselsWithoutCounselor(long categoryId, String userId) {
+	public List<Counsel> getCounselsWithoutCounselor(long categoryId, String userId) {
 		if(!userMapper.selectExistsUserId(userId)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not exist : userId = " + userId);
 		}

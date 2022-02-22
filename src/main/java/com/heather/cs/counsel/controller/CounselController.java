@@ -30,6 +30,6 @@ public class CounselController {
 
 	@GetMapping("/counsel/category/{categoryId}/authority")
 	public int getCounselsWithoutCounselor(@PathVariable long categoryId, @RequestParam String userId) { // 권한있는 사용자가 카테고리에 담당자 없는 상담건수를 조회한다
-		return counselService.getCounselsWithoutCounselor(categoryId, userId);
+		return counselService.getCounselsWithoutCounselor(categoryId, userId).size();
 	}
 }
