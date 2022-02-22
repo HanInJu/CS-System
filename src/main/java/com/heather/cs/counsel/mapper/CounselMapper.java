@@ -11,4 +11,5 @@ public interface CounselMapper {
 	void insertCounsel(Counsel counsel);
 	void insertCounselHistory(long counselId);
 	List<Counsel> selectCounselsWithoutCounselor(long categoryId);
+	void updateCounsel(Counsel counsel);
 }

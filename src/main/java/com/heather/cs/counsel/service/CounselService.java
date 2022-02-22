@@ -1,15 +1,24 @@
 package com.heather.cs.counsel.service;
 
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.heather.cs.category.mapper.CategoryMapper;
+import com.heather.cs.charger.dto.Charger;
 import com.heather.cs.charger.mapper.ChargerMapper;
 import com.heather.cs.counsel.dto.Counsel;
+import com.heather.cs.counsel.dto.CounselManager;
 import com.heather.cs.counsel.mapper.CounselMapper;
+import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -27,43 +36,59 @@ public class CounselService {
 		if(!categoryMapper.selectExistsCategory(counsel.getCategoryId())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Category Id : " + counsel.getCategoryId());
 		}
+		if(categoryMapper.selectExistsChildCategory(counsel.getCategoryId())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The category is NOT a lowest category : categoryId = " + counsel.getCategoryId());
+		}
 
+		Charger counselor = chargerMapper.selectCounselor(counsel.getCategoryId());
+		counsel.setChargerId(counselor.getUserId());
 		counsel.setCreatorId("SYSTEM");
 		counsel.setModifierId("SYSTEM");
 		counsel.setStatus("OK");
-
-		// 상담원 배정 로직 : assignCounsel
-		// 1. 카테고리에 속한 매니저 알아내기
-		// 2. 해당 카테고리에 상담 가능한 상담원 알아내기
-		// 2-1. 가능한 상담원이 없으면 null로 그냥 두기
-		// 3. 현재 상담건이 적은 사람
-		// 4. 이름 사전 앞에 오는 순으로 배정
 
 		counselMapper.insertCounsel(counsel);
 		counselMapper.insertCounselHistory(counsel.getId());
 	}
 
-	public void assignCounsel() {
-		// 0. 상담원이 배정되지 않은 문의들 가져오기 : getCounselsWithoutCounselor
-		// 1. 카테고리에 속한 매니저 알아내기
-		// 2. 해당 카테고리에 상담 가능한 상담원 알아내기
-		// 2-1. 가능한 상담원이 없으면 null로 그냥 두기
-		// 3. 현재 상담건이 적은 사람
-		// 4. 이름 사전 앞에 오는 순으로 배정
+	public void assignCounsels(CounselManager counselManager) {
+		List<Counsel> counselList = getCounselsWithoutCounselor(counselManager.getCategoryId(), counselManager.getManagerId());
+		List<Charger> counselorList = chargerMapper.selectCounselors(counselManager.getCategoryId());
+
+		if(counselorList.size() == 0) {
+			return;
+		}
+
+		PriorityQueue<Charger> counselorQueue = new PriorityQueue<>(counselorList);
+		for (Counsel currentCounsel : counselList) {
+			if (counselorQueue.isEmpty()) {
+				throw new IllegalStateException("Cast Error : Cannot convert List to Queue");
+			}
+			Charger currentCharger = counselorQueue.poll();
+			currentCounsel.setChargerId(currentCharger.getUserId());
+
+			currentCharger.setNumberOfCounsel(currentCharger.getNumberOfCounsel() + 1);
+			counselorQueue.add(currentCharger);
+		}
+
+		for(Counsel counsel : counselList) {
+			counsel.setModifierId(counselManager.getManagerId());
+			counselMapper.updateCounsel(counsel);
+			counselMapper.insertCounselHistory(counsel.getId());
+		}
 
 	}
 
-	public List<Counsel> getCounselsWithoutCounselor(long categoryId, String userId) {
-		if(!userMapper.selectExistsUserId(userId)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not exist : userId = " + userId);
+	public List<Counsel> getCounselsWithoutCounselor(long categoryId, String managerId) {
+		if(!userMapper.selectExistsUserId(managerId)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not exist : managerId = " + managerId);
 		}
 
-		List<String> managerList = chargerMapper.selectManager(categoryId);
+		List<String> managerList = chargerMapper.selectManagers(categoryId);
 		managerList.stream()
-			.filter(x -> x.equals(userId))
+			.filter(x -> x.equals(managerId))
 			.findFirst()
-			.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User Not Authorized for categoryId : " + categoryId + ", userId : " + userId));
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "The User Not Authorized for categoryId : " + categoryId + ", managerId : " + managerId));
 
-		return counselMapper.selectCounselsWithoutCounselor(categoryId);
+		return counselMapper.selectCounselsWithoutCounselor(categoryId); // counselId, categoryId
 	}
 }

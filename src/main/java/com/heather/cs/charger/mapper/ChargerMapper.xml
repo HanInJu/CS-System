@@ -3,11 +3,40 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heather.cs.charger.mapper.ChargerMapper">
 
-    <select id="selectManager" parameterType="long" resultType="String">
+    <select id="selectManagers" parameterType="long" resultType="String">
         SELECT c.user_id
         FROM charger c
-                 INNER JOIN user u on c.user_id = u.id
+        INNER JOIN user u on c.user_id = u.id
         WHERE c.category_id = #{categoryId} AND u.role = 'MANAGER' AND u.status = 'NORMAL'
+    </select>
+
+    <select id="selectCounselors" parameterType="long" resultType="charger">
+        SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
+        FROM (
+              SELECT c.user_id
+              FROM charger c
+              INNER JOIN user u on c.user_id = u.id
+              WHERE c.category_id = #{categoryId} AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE'
+              GROUP BY c.user_id
+              ) cu
+                 LEFT JOIN counsel cs on cu.user_id = cs.charger_id
+        GROUP BY cu.user_id
+        ORDER BY number_of_counsel, cu.user_id
+    </select>
+
+    <select id="selectCounselor" parameterType="long" resultType="charger">
+        SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
+        FROM (
+                 SELECT c.user_id
+                 FROM charger c
+                          INNER JOIN user u on c.user_id = u.id
+                 WHERE c.category_id = #{categoryId} AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE'
+                 GROUP BY c.user_id
+             ) cu
+                 LEFT JOIN counsel cs on cu.user_id = cs.charger_id
+        GROUP BY cu.user_id
+        ORDER BY number_of_counsel, cu.user_id
+        LIMIT 1
     </select>
 
 </mapper>

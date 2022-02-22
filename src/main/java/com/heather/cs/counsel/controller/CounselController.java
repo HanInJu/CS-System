@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.heather.cs.counsel.dto.Counsel;
+import com.heather.cs.counsel.dto.CounselManager;
 import com.heather.cs.counsel.service.CounselService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,12 @@ public class CounselController {
 	}
 
 	@PostMapping("/counsel/assignment")
-	public void assignCounsel() {
-
+	public void assignCounsels(@RequestBody CounselManager counselManager) {
+		counselService.assignCounsels(counselManager);
 	}
 
 	@GetMapping("/counsel/category/{categoryId}/authority")
-	public int getCounselsWithoutCounselor(@PathVariable long categoryId, @RequestParam String userId) { // 권한있는 사용자가 카테고리에 담당자 없는 상담건수를 조회한다
-		return counselService.getCounselsWithoutCounselor(categoryId, userId).size();
+	public int getCounselsWithoutCounselor(@PathVariable long categoryId, @RequestParam String managerId) {
+		return counselService.getCounselsWithoutCounselor(categoryId, managerId).size();
 	}
 }

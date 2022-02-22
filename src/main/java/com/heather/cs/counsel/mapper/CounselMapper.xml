@@ -4,8 +4,8 @@
 <mapper namespace="com.heather.cs.counsel.mapper.CounselMapper">
 
     <insert id="insertCounsel" parameterType="counsel" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO counsel(category_id, title, content, customer_name, customer_email, status, creator_id, modifier_id, created_at, modified_at)
-        VALUES(#{categoryId}, #{title}, #{content}, #{customerName}, #{customerEmail}, #{status}, #{creatorId}, #{modifierId}, now(), now())
+        INSERT INTO counsel(category_id, charger_id, title, content, customer_name, customer_email, status, creator_id, modifier_id, created_at, modified_at)
+        VALUES(#{categoryId}, #{chargerId}, #{title}, #{content}, #{customerName}, #{customerEmail}, #{status}, #{creatorId}, #{modifierId}, now(), now())
     </insert>
 
     <insert id="insertCounselHistory" parameterType="long">
@@ -24,5 +24,13 @@
         INNER JOIN category c on co.category_id = c.id
         WHERE co.category_id = #{categoryId} AND co.charger_id IS NULL;
     </select>
+
+    <update id="updateCounsel" parameterType="counsel">
+        UPDATE counsel
+        SET charger_id = #{chargerId},
+            modifier_id = #{modifierId},
+            modified_at = now()
+        WHERE id = #{id};
+    </update>
 
 </mapper>
