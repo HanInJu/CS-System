@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.heather.cs.category.mapper.CategoryMapper;
+import com.heather.cs.charger.mapper.ChargerMapper;
 import com.heather.cs.counsel.dto.Counsel;
 import com.heather.cs.counsel.mapper.CounselMapper;
 import com.heather.cs.user.mapper.UserMapper;
@@ -19,6 +20,7 @@ public class CounselService {
 
 	private final CounselMapper counselMapper;
 	private final CategoryMapper categoryMapper;
+	private final ChargerMapper chargerMapper;
 	private final UserMapper userMapper;
 
 	public void registerCounsel(Counsel counsel) {
@@ -56,7 +58,7 @@ public class CounselService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not exist : userId = " + userId);
 		}
 
-		List<String> managerList = categoryMapper.selectManager(categoryId);
+		List<String> managerList = chargerMapper.selectManager(categoryId);
 		managerList.stream()
 			.filter(x -> x.equals(userId))
 			.findFirst()

@@ -12,5 +12,4 @@ public interface CategoryMapper {
     List<Category> selectSubcategory(long categoryId);
     boolean selectExistsChildCategory(long categoryId);
     List<Category> selectAllCategories();
-    List<String> selectManager(long categoryId);
 }
