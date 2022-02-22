@@ -8,7 +8,7 @@
         VALUES(#{categoryId}, #{title}, #{content}, #{customerName}, #{customerEmail}, #{status}, #{creatorId}, #{modifierId}, now(), now())
     </insert>
 
-    <insert id="insertCounselHistory" parameterType="Long">
+    <insert id="insertCounselHistory" parameterType="long">
         INSERT INTO counsel_history(counsel_id, sequence, category_id, title, content, requestor_email, charger_id, status, creator_id, created_at)
         SELECT c.id AS counsel_id,
                (COUNT(ch.counsel_id)) + 1 AS sequence,
@@ -17,5 +17,12 @@
         LEFT JOIN counsel_history AS ch on c.id = ch.counsel_id
         WHERE c.id = #{counselId};
     </insert>
+
+    <select id="selectCounselsWithoutCounselor" parameterType="long" resultType="int">
+        SELECT COUNT(counsel.id)
+        FROM counsel
+        INNER JOIN category c on counsel.category_id = c.id
+        WHERE counsel.category_id = #{categoryId};
+    </select>
 
 </mapper>

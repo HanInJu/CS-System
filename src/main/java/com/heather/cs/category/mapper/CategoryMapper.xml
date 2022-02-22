@@ -33,4 +33,11 @@
         FROM category
     </select>
 
+    <select id="selectManager" parameterType="long" resultType="String">
+        SELECT c.user_id
+        FROM charger c
+        INNER JOIN user u on c.user_id = u.id
+        WHERE c.category_id = #{categoryId} AND u.role = 'MANAGER' AND u.status = 'NORMAL'
+    </select>
+
 </mapper>

@@ -12,5 +12,5 @@ public interface UserMapper {
 	String selectUserRole(String userId);
 	void updateStatus(User user);
 	User selectUser(String userId);
-	boolean selectExistsUser(User user);
+	boolean selectExistsUserHasThisInformation(User user);
 }

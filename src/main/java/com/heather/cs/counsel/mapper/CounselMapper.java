@@ -8,4 +8,5 @@ import com.heather.cs.counsel.dto.Counsel;
 public interface CounselMapper {
 	void insertCounsel(Counsel counsel);
 	void insertCounselHistory(long counselId);
+	int selectCounselsWithoutCounselor(long categoryId);
 }

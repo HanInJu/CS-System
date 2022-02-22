@@ -21,7 +21,7 @@ public class UserService {
 	@Transactional
 	public void registerUser(User user) {
 		if(userMapper.selectExistsUserId(user.getId())) {
-			throw new IllegalArgumentException("Duplicated Id");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicated Id");
 		}
 
 		user.setRole("COUNSELOR");
@@ -38,7 +38,7 @@ public class UserService {
 		User user = new User();
 		user.setId(id);
 		user.setPassword(password);
-		if(!userMapper.selectExistsUser(user)) {
+		if(!userMapper.selectExistsUserHasThisInformation(user)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id or Password is not correct");
 		}
 		return id;
@@ -47,7 +47,7 @@ public class UserService {
 	@Transactional
 	public void changeTheCounselorStatus(String userId, String state) {
 		if(!userMapper.selectExistsUserId(userId)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The userId does not exist : userId = " + userId);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not exist : userId = " + userId);
 		}
 
 		String userRole = userMapper.selectUserRole(userId);
