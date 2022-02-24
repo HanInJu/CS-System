@@ -13,7 +13,7 @@
         INSERT INTO user(id, name, password, role, status, use_yn, creator_id, modifier_id, created_at, modified_at)
         VALUES(#{id}, #{name}, #{password}, #{role}, #{status}, #{useYn}, #{creatorId}, #{modifierId}, now(), now())
     </insert>
-
+<!-- user_history가 여러 개 있을 때 2-3개 들어가는지 체크해봐야 함!!!!!!(GROUP BY도 안되어 있으니까) sequence랑 modified_at은 서브쿼리로 하고 -->
     <insert id="insertUserHistory" parameterType="String">
         INSERT INTO user_history (user_id, sequence, name, password, role, status, use_yn, creator_id, created_at)
         SELECT u.id as user_id,
@@ -24,12 +24,14 @@
         WHERE u.id = #{userId}
     </insert>
 
+<!-- * 쓰지 말라는 이유는 너무 많은 불필요한 걸 가져올까봐 그러는 건데, 이건 row 1개만 가져오는 거니까 불필요하지 않을까? 너무 많은 메서드가 생기는 거니까 그냥 유저로 가져와도 되지 않을까 싶음 -->
     <select id="selectUserRole" parameterType="String" resultType="String">
         SELECT role
         FROM user
         WHERE id = #{userId}
     </select>
 
+<!--    now는 대문자로 -->
     <update id="updateStatus" parameterType="user">
         UPDATE user
         SET status = #{status},
@@ -38,6 +40,7 @@
         WHERE id = #{id}
     </update>
 
+<!--    user 테이블명이니까 소문자-->
     <select id="selectUser" parameterType="String" resultType="user">
         SELECT id,
                name,
