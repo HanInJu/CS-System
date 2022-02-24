@@ -3,42 +3,41 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heather.cs.charger.mapper.ChargerMapper">
 
-<!--    본인만 선택하면 되지 매니저리스트를 가져올 필요는 없음-->
-    <select id="selectManagers" parameterType="long" resultType="String">
-        SELECT c.user_id
-        FROM charger c
-        INNER JOIN user u on c.user_id = u.id
-        WHERE c.category_id = #{categoryId} AND u.role = 'MANAGER' AND u.status = 'NORMAL'
+    <select id="selectAvailableCounselorList" parameterType="String" resultType="charger">
+        SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
+        FROM (
+              SELECT c.user_id
+              FROM charger c
+              INNER JOIN user u ON c.user_id = u.id
+              WHERE c.category_id = (SELECT category_id
+                                     FROM charger
+                                     WHERE user_id = #{managerId}) AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE' AND u.use_yn = 'Y'
+             ) cu
+        LEFT JOIN counsel cs on cu.user_id = cs.charger_id
+        GROUP BY cu.user_id
+        ORDER BY number_of_counsel, cu.user_id
     </select>
-<!--    여기서 GROUP 될 이유가 없어!!!!!!!! 각자 다 PK가 있는 상황에서 여러 개로 row가 뻥튀기 될 일이 없으니까-->
-    <select id="selectCounselors" parameterType="long" resultType="charger">
+
+    <select id="selectOneAvailableCounselor" parameterType="long" resultType="charger">
         SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
         FROM (
               SELECT c.user_id
               FROM charger c
               INNER JOIN user u on c.user_id = u.id
               WHERE c.category_id = #{categoryId} AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE'
-              GROUP BY c.user_id
-              ) cu
-        LEFT JOIN counsel cs on cu.user_id = cs.charger_id
-        GROUP BY cu.user_id
-        ORDER BY number_of_counsel, cu.user_id
-    </select>
-<!--    selectCounselor는 그 상담원에 대한 정보를 가져온다는 메서드 이름 느낌인데 지금은 정보를 가져오는 게 아니라 건수만 가져오고 있으니까 이름을 좀 다르게 할 수 있을 것 같음-->
-<!--    여기도 마찬가지로 그룹 필요 없음-->
-    <select id="selectCounselor" parameterType="long" resultType="charger">
-        SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
-        FROM (
-                 SELECT c.user_id
-                 FROM charger c
-                 INNER JOIN user u on c.user_id = u.id
-                 WHERE c.category_id = #{categoryId} AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE'
-                 GROUP BY c.user_id
              ) cu
         LEFT JOIN counsel cs on cu.user_id = cs.charger_id
         GROUP BY cu.user_id
         ORDER BY number_of_counsel, cu.user_id
         LIMIT 1
+    </select>
+    
+    <select id="selectCountUnassignedCounsels" parameterType="String" resultType="int">
+        SELECT COUNT(counsel.id)
+        FROM counsel
+        INNER JOIN charger c on counsel.category_id = c.category_id
+        INNER JOIN user u on u.id = c.user_id
+        WHERE u.id = #{managerId} AND counsel.charger_id IS NULL
     </select>
 
 </mapper>

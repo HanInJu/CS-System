@@ -23,11 +23,11 @@ public class CategoryService {
 
     public List<Category> getSubcategory(long categoryId) {
         if(!categoryMapper.selectExistsCategory(categoryId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid CategoryId : " + categoryId);
+            throw new IllegalArgumentException("Invalid CategoryId : " + categoryId);
         }
 
         if(!categoryMapper.selectExistsChildCategory(categoryId)) {
-            throw new ResponseStatusException(HttpStatus.OK, "The category is a lowest category : categoryId = " + categoryId);
+            throw new IllegalArgumentException("The category is a lowest category : categoryId = " + categoryId);
         }
 
         return categoryMapper.selectSubcategory(categoryId);

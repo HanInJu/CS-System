@@ -38,17 +38,13 @@ public class UserController {
 
 	@PatchMapping("/user/status/on")
 	public void changeStatusOn(@CookieValue(value = LOGIN_COOKIE) Cookie cookie) {
-		if(cookie == null) {
-			throw new IllegalArgumentException("No LogIn Information");
-		}
+		userService.checkCookie(cookie);
 		userService.changeStatusOn(cookie.getValue());
 	}
 
 	@PatchMapping("/user/status/off")
 	public void changeStatusOff(@CookieValue(value = LOGIN_COOKIE) Cookie cookie) {
-		if(cookie == null) {
-			throw new IllegalArgumentException("No LogIn Information");
-		}
+		userService.checkCookie(cookie);
 		userService.changeStatusOff(cookie.getValue());
 	}
 

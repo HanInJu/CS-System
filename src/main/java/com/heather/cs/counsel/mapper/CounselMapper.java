@@ -10,6 +10,9 @@ import com.heather.cs.counsel.dto.Counsel;
 public interface CounselMapper {
 	void insertCounsel(Counsel counsel);
 	void insertCounselHistory(long counselId);
-	List<Counsel> selectCounselsWithoutCounselor(long categoryId);
-	void updateCounsel(Counsel counsel);
+	List<Counsel> selectUnassignedCounselList(String managerId);
+	// void updateCounselCharger(List<Counsel> list);
+	// void insertCounselChargerInHistory(List<Counsel> list);
+	void updateCounselCharger(Counsel counsel);
+	void insertCounselChargerInHistory(long counselId);
 }

@@ -3,11 +3,12 @@ package com.heather.cs.user.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.heather.cs.code.dto.CommonCode;
-import com.heather.cs.code.mapper.CodeMapper;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserMapper userMapper;
+	private static final String MANAGER = "MANAGER";
 
 	@Transactional
 	public void registerUser(User user) {
@@ -73,6 +75,19 @@ public class UserService {
 		map.put("status", status);
 		userMapper.updateStatus(map);
 		userMapper.insertUserHistory(userId);
+	}
+
+	public void checkManagerPrivileges(String userId) {
+		User user = userMapper.selectActiveUser(userId);
+		if(!user.getRole().equals(MANAGER)) {
+			throw new IllegalArgumentException("No Permission : userId = " + userId);
+		}
+	}
+	
+	public void checkCookie(Cookie cookie) {
+		if(cookie == null) {
+			throw new IllegalArgumentException("No LogIn Information");
+		}
 	}
 
 }
