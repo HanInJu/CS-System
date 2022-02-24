@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heather.cs.category.mapper.CategoryMapper">
+
+    <select id="selectExistsCategory" parameterType="long" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM category
+                      WHERE id = #{categoryId});
+    </select>
+
+    <select id="selectSubcategory" parameterType="long" resultType="category">
+        SELECT id,
+               name,
+               description,
+               use_yn,
+               depth
+        FROM category
+        WHERE parent_id = #{categoryId}
+    </select>
+
+    <select id="selectExistsChildCategory" parameterType="long" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM category
+                      WHERE parent_id = #{categoryId})
+    </select>
+
+    <select id="selectAllCategories" resultType="category">
+        SELECT id,
+               parent_id,
+               name,
+               description,
+               use_yn,
+               depth
+        FROM category
+    </select>
+
+</mapper>
