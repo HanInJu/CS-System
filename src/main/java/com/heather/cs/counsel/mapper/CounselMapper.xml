@@ -54,7 +54,7 @@
         SET charger_id = #{chargerId},
             modifier_id = #{modifierId},
             modified_at = now()
-        WHERE id = #{id};
+        WHERE id = #{id} AND counsel.charger_id IS NULL
     </update>
 
 </mapper>
