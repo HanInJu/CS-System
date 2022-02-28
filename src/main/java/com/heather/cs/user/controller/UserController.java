@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.heather.cs.annotation.LogInUser;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.service.UserService;
 
@@ -43,9 +44,8 @@ public class UserController {
 	}
 
 	@PatchMapping("/user/status/off")
-	public void changeStatusOff(@CookieValue(value = LOGIN_COOKIE) Cookie cookie) {
-		userService.checkCookie(cookie);
-		userService.changeStatusOff(cookie.getValue());
+	public void changeStatusOff(@LogInUser User user) {
+		userService.changeStatusOff(user);
 	}
 
 }

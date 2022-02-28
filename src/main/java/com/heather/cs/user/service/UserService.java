@@ -62,19 +62,17 @@ public class UserService {
 	}
 
 	@Transactional
-	public void changeStatusOff(String userId) {
-		User user = userMapper.selectActiveUser(userId);
+	public void changeStatusOff(User user) {
 		String status = user.getStatus();
 		if (status.equals(CommonCode.UNAVAILABLE.toString())) {
 			throw new IllegalStateException("The counselor's status is already OFF");
 		}
-
 		status = CommonCode.UNAVAILABLE.toString();
 		Map<String, String> map = new HashMap<>();
-		map.put("userId", userId);
+		map.put("userId", user.getId());
 		map.put("status", status);
 		userMapper.updateStatus(map);
-		userMapper.insertUserHistory(userId);
+		userMapper.insertUserHistory(user.getId());
 	}
 
 	public void checkManagerPrivileges(String userId) {
