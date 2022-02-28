@@ -29,14 +29,12 @@ public class CounselController {
 
 	@GetMapping("/counsels/assignment")
 	public void assignCounsels(@CookieValue(value = LOGIN_COOKIE) Cookie cookie) {
-		userService.checkCookie(cookie);
 		userService.checkManagerPrivileges(cookie.getValue());
 		counselService.assignCounsels(cookie.getValue());
 	}
 
 	@GetMapping("/counsels")
 	public int getCounselsWithoutCharger(@CookieValue(value = LOGIN_COOKIE) Cookie cookie) {
-		userService.checkCookie(cookie);
 		userService.checkManagerPrivileges(cookie.getValue());
 		return counselService.getCounselsWithoutCharger(cookie.getValue());
 	}

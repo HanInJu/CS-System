@@ -83,11 +83,5 @@ public class UserService {
 			throw new IllegalArgumentException("No Permission : userId = " + userId);
 		}
 	}
-	
-	public void checkCookie(Cookie cookie) {
-		if(cookie == null) {
-			throw new IllegalArgumentException("No LogIn Information");
-		}
-	}
 
 }
