@@ -3,12 +3,11 @@ package com.heather.cs.user.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.heather.cs.code.dto.CommonCode;
+import com.heather.cs.code.dto.UserIdentifier;
+import com.heather.cs.code.dto.UserStatus;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserMapper userMapper;
-	private static final String MANAGER = "MANAGER";
 
 	@Transactional
 	public void registerUser(User user) {
@@ -27,8 +25,8 @@ public class UserService {
 			throw new IllegalArgumentException("Duplicated Id : id = " + user.getId());
 		}
 
-		user.setRole("COUNSELOR");
-		user.setStatus("AVAILABLE");
+		user.setRole(UserIdentifier.COUNSELOR.toString());
+		user.setStatus(UserStatus.AVAILABLE.toString());
 		user.setUseYn("Y");
 		user.setCreatorId(user.getId());
 		user.setModifierId(user.getId());
@@ -37,7 +35,7 @@ public class UserService {
 		userMapper.insertUserHistory(user.getId());
 	}
 
-	public boolean logIn(String userId, String password) {
+	public boolean isValidUser(String userId, String password) {
 		User user = userMapper.selectActiveUser(userId);
 		if (!password.equals(user.getPassword())) {
 			throw new IllegalStateException("Password is not correct : userId = " + userId);
@@ -49,11 +47,11 @@ public class UserService {
 	public void changeStatusOn(String userId) {
 		User user = userMapper.selectActiveUser(userId);
 		String status = user.getStatus();
-		if (status.equals(CommonCode.AVAILABLE.toString())) {
+		if (status.equals(UserStatus.AVAILABLE.toString())) {
 			throw new IllegalStateException("The counselor's status is already ON");
 		}
 
-		status = CommonCode.AVAILABLE.toString();
+		status = UserStatus.AVAILABLE.toString();
 		Map<String, String> map = new HashMap<>();
 		map.put("userId", userId);
 		map.put("status", status);
@@ -64,10 +62,10 @@ public class UserService {
 	@Transactional
 	public void changeStatusOff(User user) {
 		String status = user.getStatus();
-		if (status.equals(CommonCode.UNAVAILABLE.toString())) {
+		if (status.equals(UserStatus.UNAVAILABLE.toString())) {
 			throw new IllegalStateException("The counselor's status is already OFF");
 		}
-		status = CommonCode.UNAVAILABLE.toString();
+		status = UserStatus.UNAVAILABLE.toString();
 		Map<String, String> map = new HashMap<>();
 		map.put("userId", user.getId());
 		map.put("status", status);
@@ -77,7 +75,7 @@ public class UserService {
 
 	public void checkManagerPrivileges(String userId) {
 		User user = userMapper.selectActiveUser(userId);
-		if(!user.getRole().equals(MANAGER)) {
+		if(!user.getRole().equals(UserIdentifier.MANAGER.toString())) {
 			throw new IllegalArgumentException("No Permission : userId = " + userId);
 		}
 	}

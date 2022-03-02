@@ -11,8 +11,5 @@ public interface CounselMapper {
 	void insertCounsel(Counsel counsel);
 	void insertCounselHistory(long counselId);
 	List<Counsel> selectUnassignedCounselList(String managerId);
-	// void updateCounselCharger(List<Counsel> list);
-	// void insertCounselChargerInHistory(List<Counsel> list);
 	void updateCounselCharger(Counsel counsel);
-	void insertCounselChargerInHistory(long counselId);
 }

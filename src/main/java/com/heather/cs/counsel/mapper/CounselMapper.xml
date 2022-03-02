@@ -25,30 +25,7 @@
         INNER JOIN user u ON u.id = c.user_id
         WHERE u.id = #{managerId} AND counsel.charger_id IS NULL
     </select>
-<!-- foreach로 update, insert 하려고 url에 allowMultiQueries 옵션도 추가하고 오래 찾아봤는데 결국 에러를 해결할 수 없었다.
-    <update id="updateCounselCharger" parameterType="java.util.List">
-        <foreach collection="list" item="item">
-            UPDATE counsel
-            SET
-            charger_id = #{item.chargerId},
-                modifier_id = #{item.modifierId},
-                modified_at = NOW()
-            WHERE id = #{item.id}
-        </foreach>
-    </update>
 
-    <insert id="insertCounselChargerInHistory" parameterType="java.util.List">
-        <foreach collection="list" item="item">
-            INSERT INTO counsel_history(counsel_id, sequence, category_id, title, content, requestor_email, charger_id, status, creator_id, created_at)
-            SELECT c.id AS counsel_id,
-            (COUNT(ch.counsel_id)) + 1 AS sequence,
-            c.category_id, c.title, c.content, customer_email AS requestor_email, c.charger_id, c.status, modifier_id, modified_at
-            FROM counsel AS c
-            LEFT JOIN counsel_history AS ch on c.id = ch.counsel_id
-            WHERE c.id = #{item.id}
-        </foreach>
-    </insert>
--->
     <update id="updateCounselCharger" parameterType="counsel">
         UPDATE counsel
         SET charger_id = #{chargerId},
