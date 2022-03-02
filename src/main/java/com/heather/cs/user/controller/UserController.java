@@ -38,8 +38,8 @@ public class UserController {
 	}
 
 	@PatchMapping("/user/status/on")
-	public void changeStatusOn(@CookieValue(value = LOGIN_COOKIE) Cookie cookie) {
-		userService.changeStatusOn(cookie.getValue());
+	public void changeStatusOn(@LogInUser User user) {
+		userService.changeStatusOn(user);
 	}
 
 	@PatchMapping("/user/status/off")

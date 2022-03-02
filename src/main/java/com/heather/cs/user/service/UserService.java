@@ -1,13 +1,11 @@
 package com.heather.cs.user.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.heather.cs.code.dto.ManagerStatus;
 import com.heather.cs.code.dto.UserIdentifier;
-import com.heather.cs.code.dto.UserStatus;
+import com.heather.cs.code.dto.CounselorStatus;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 
@@ -26,7 +24,7 @@ public class UserService {
 		}
 
 		user.setRole(UserIdentifier.COUNSELOR.toString());
-		user.setStatus(UserStatus.AVAILABLE.toString());
+		user.setStatus(CounselorStatus.AVAILABLE.toString());
 		user.setUseYn("Y");
 		user.setCreatorId(user.getId());
 		user.setModifierId(user.getId());
@@ -43,41 +41,74 @@ public class UserService {
 		return true;
 	}
 
-	@Transactional
-	public void changeStatusOn(String userId) {
-		User user = userMapper.selectActiveUser(userId);
-		String status = user.getStatus();
-		if (status.equals(UserStatus.AVAILABLE.toString())) {
-			throw new IllegalStateException("The counselor's status is already ON");
+	public void changeStatusOn(User user) {
+		if (hasManagerPrivileges(user.getId())) {
+			changeManagerStatusOn(user);
 		}
+		changeCounselorStatusOn(user);
+	}
 
-		status = UserStatus.AVAILABLE.toString();
-		Map<String, String> map = new HashMap<>();
-		map.put("userId", userId);
-		map.put("status", status);
-		userMapper.updateStatus(map);
-		userMapper.insertUserHistory(userId);
+	public void changeStatusOff(User user) {
+		if (hasManagerPrivileges(user.getId())) {
+			changeManagerStatusOff(user);
+		}
+		changeCounselorStatusOff(user);
+	}
+
+	public boolean hasManagerPrivileges(String userId) {
+		User user = userMapper.selectActiveUser(userId);
+		if (!user.getRole().equals(UserIdentifier.MANAGER.toString())) {
+			throw new IllegalArgumentException("No Permission : userId = " + userId);
+		}
+		return true;
 	}
 
 	@Transactional
-	public void changeStatusOff(User user) {
+	public void changeCounselorStatusOn(User user) {
 		String status = user.getStatus();
-		if (status.equals(UserStatus.UNAVAILABLE.toString())) {
-			throw new IllegalStateException("The counselor's status is already OFF");
+		if (status.equals(CounselorStatus.AVAILABLE.toString())) {
+			throw new IllegalStateException("The counselor's status is already ON");
 		}
-		status = UserStatus.UNAVAILABLE.toString();
-		Map<String, String> map = new HashMap<>();
-		map.put("userId", user.getId());
-		map.put("status", status);
-		userMapper.updateStatus(map);
+		status = CounselorStatus.AVAILABLE.toString();
+		user.setStatus(status);
+		userMapper.updateUserStatus(user);
 		userMapper.insertUserHistory(user.getId());
 	}
 
-	public void checkManagerPrivileges(String userId) {
-		User user = userMapper.selectActiveUser(userId);
-		if(!user.getRole().equals(UserIdentifier.MANAGER.toString())) {
-			throw new IllegalArgumentException("No Permission : userId = " + userId);
+	@Transactional
+	public void changeCounselorStatusOff(User user) {
+		String status = user.getStatus();
+		if (status.equals(CounselorStatus.UNAVAILABLE.toString())) {
+			throw new IllegalStateException("The counselor's status is already OFF");
 		}
+		status = CounselorStatus.UNAVAILABLE.toString();
+		user.setStatus(status);
+		userMapper.updateUserStatus(user);
+		userMapper.insertUserHistory(user.getId());
+	}
+
+	@Transactional
+	public void changeManagerStatusOn(User user) {
+		String status = user.getStatus();
+		if (status.equals(ManagerStatus.NORMAL.toString())) {
+			throw new IllegalStateException("The manager's status is already ON");
+		}
+		status = ManagerStatus.NORMAL.toString();
+		user.setStatus(status);
+		userMapper.updateUserStatus(user);
+		userMapper.insertUserHistory(user.getId());
+	}
+
+	@Transactional
+	public void changeManagerStatusOff(User user) {
+		String status = user.getStatus();
+		if (status.equals(ManagerStatus.SUSPENDED.toString())) {
+			throw new IllegalStateException("The manager's status is already OFF");
+		}
+		status = ManagerStatus.SUSPENDED.toString();
+		user.setStatus(status);
+		userMapper.updateUserStatus(user);
+		userMapper.insertUserHistory(user.getId());
 	}
 
 }

@@ -27,11 +27,12 @@ public class CounselService {
 
 	@Transactional
 	public void registerCounsel(Counsel counsel) {
-		if(!categoryMapper.selectExistsCategory(counsel.getCategoryId())) {
+		if (!categoryMapper.selectExistsCategory(counsel.getCategoryId())) {
 			throw new IllegalArgumentException("Invalid Category Id : " + counsel.getCategoryId());
 		}
-		if(categoryMapper.selectExistsChildCategory(counsel.getCategoryId())) {
-			throw new IllegalArgumentException("The category is NOT a lowest category : categoryId = " + counsel.getCategoryId());
+		if (categoryMapper.selectExistsChildCategory(counsel.getCategoryId())) {
+			throw new IllegalArgumentException(
+				"The category is NOT a lowest category : categoryId = " + counsel.getCategoryId());
 		}
 
 		Charger counselor = chargerMapper.selectOneAvailableCounselor(counsel.getCategoryId());
@@ -49,7 +50,7 @@ public class CounselService {
 		List<Counsel> counselList = getUnassignedCounselList(managerId);
 		List<Charger> counselorList = chargerMapper.selectAvailableCounselorList(managerId);
 
-		if(counselorList.size() == 0) {
+		if (counselorList.size() == 0) {
 			throw new IllegalStateException("There are no Counselors available.");
 		}
 
@@ -66,7 +67,7 @@ public class CounselService {
 			counselorQueue.add(currentCharger);
 		}
 
-		for(Counsel counsel : counselList) {
+		for (Counsel counsel : counselList) {
 			counselMapper.updateCounselCharger(counsel);
 			counselMapper.insertCounselHistory(counsel.getId());
 		}
@@ -96,7 +97,7 @@ public class CounselService {
 		return counselMapper.selectUnassignedCounselList(managerId);
 	}
 
-	public int getCounselsWithoutCharger(String managerId) {
+	public int countCounselsWithoutCharger(String managerId) {
 		return chargerMapper.selectCountUnassignedCounsels(managerId);
 	}
 
