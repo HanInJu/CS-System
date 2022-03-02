@@ -36,7 +36,7 @@ public class UserService {
 	public boolean isValidUser(String userId, String password) {
 		User user = userMapper.selectActiveUser(userId);
 		if (!password.equals(user.getPassword())) {
-			throw new IllegalStateException("Password is not correct : userId = " + userId);
+			throw new IllegalArgumentException("Password is not correct : userId = " + userId);
 		}
 		return true;
 	}
