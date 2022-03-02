@@ -57,10 +57,7 @@ public class UserService {
 
 	public boolean hasManagerPrivileges(String userId) {
 		User user = userMapper.selectActiveUser(userId);
-		if (!user.getRole().equals(UserIdentifier.MANAGER.toString())) {
-			throw new IllegalArgumentException("No Permission : userId = " + userId);
-		}
-		return true;
+		return user.getRole().equals(UserIdentifier.MANAGER.toString());
 	}
 
 	@Transactional

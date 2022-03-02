@@ -27,13 +27,17 @@ public class CounselController {
 
 	@GetMapping("/counsels/assignment")
 	public void assignCounsels(@LogInUser User user) {
-		userService.hasManagerPrivileges(user.getId());
+		if(userService.hasManagerPrivileges(user.getId())) {
+			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
+		}
 		counselService.assignCounsels(user.getId());
 	}
 
 	@GetMapping("/counsels")
 	public int countCounselsWithoutCharger(@LogInUser User user) {
-		userService.hasManagerPrivileges(user.getId());
+		if(userService.hasManagerPrivileges(user.getId())) {
+			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
+		}
 		return counselService.countCounselsWithoutCharger(user.getId());
 	}
 }

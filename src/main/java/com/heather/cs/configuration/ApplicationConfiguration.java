@@ -18,15 +18,17 @@ import com.heather.cs.argumentresolver.UserArgumentResolver;
 import com.heather.cs.interceptor.AuthInterceptor;
 import com.heather.cs.user.mapper.UserMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @Import({DatabaseConfiguration.class})
 @PropertySource("classpath:application.properties")
 @EnableWebMvc
 @ComponentScan({"com.heather.cs.*"})
+@RequiredArgsConstructor
 public class ApplicationConfiguration implements WebMvcConfigurer {
 
-	@Autowired
-	private UserMapper userMapper;
+	private final UserMapper userMapper;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
