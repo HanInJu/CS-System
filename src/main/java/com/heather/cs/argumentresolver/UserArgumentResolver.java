@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
+	public final String USER_ATTRIBUTE = "AUTH_USER";
+
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		return parameter.hasParameterAnnotation(LogInUser.class);
@@ -26,7 +28,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
 		HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
-		User user = (User)request.getAttribute("AUTH_USER");
+		User user = (User)request.getAttribute(USER_ATTRIBUTE);
 		LogInUser loginUser = parameter.getParameterAnnotation(LogInUser.class);
 
 		if (loginUser == null || user == null) {
