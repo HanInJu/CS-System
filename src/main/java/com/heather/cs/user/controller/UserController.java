@@ -30,7 +30,7 @@ public class UserController {
 
 	@PostMapping("/logIn")
 	public void logIn(HttpServletResponse response, @RequestBody User user) {
-		if(userService.logIn(user.getId(), user.getPassword())) {
+		if(userService.isValidUser(user.getId(), user.getPassword())) {
 			Cookie userIdCookie = new Cookie(LOGIN_COOKIE, user.getId());
 			userIdCookie.setMaxAge(COOKIE_MAX_AGE);
 			response.addCookie(userIdCookie);
