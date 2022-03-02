@@ -1,0 +1,43 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heather.cs.charger.mapper.ChargerMapper">
+
+    <select id="selectAvailableCounselorList" parameterType="String" resultType="charger">
+        SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
+        FROM (
+              SELECT c.user_id
+              FROM charger c
+              INNER JOIN user u ON c.user_id = u.id
+              WHERE c.category_id = (SELECT category_id
+                                     FROM charger
+                                     WHERE user_id = #{managerId}) AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE' AND u.use_yn = 'Y'
+             ) cu
+        LEFT JOIN counsel cs on cu.user_id = cs.charger_id
+        GROUP BY cu.user_id
+        ORDER BY number_of_counsel, cu.user_id
+    </select>
+
+    <select id="selectOneAvailableCounselor" parameterType="long" resultType="charger">
+        SELECT cu.user_id, COUNT(cs.charger_id) number_of_counsel
+        FROM (
+              SELECT c.user_id
+              FROM charger c
+              INNER JOIN user u on c.user_id = u.id
+              WHERE c.category_id = #{categoryId} AND u.role = 'COUNSELOR' AND u.status = 'AVAILABLE'
+             ) cu
+        LEFT JOIN counsel cs on cu.user_id = cs.charger_id
+        GROUP BY cu.user_id
+        ORDER BY number_of_counsel, cu.user_id
+        LIMIT 1
+    </select>
+    
+    <select id="selectCountUnassignedCounsels" parameterType="String" resultType="int">
+        SELECT COUNT(counsel.id)
+        FROM counsel
+        INNER JOIN charger c on counsel.category_id = c.category_id
+        INNER JOIN user u on u.id = c.user_id
+        WHERE u.id = #{managerId} AND counsel.charger_id IS NULL
+    </select>
+
+</mapper>

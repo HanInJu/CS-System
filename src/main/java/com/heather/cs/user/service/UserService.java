@@ -1,11 +1,15 @@
 package com.heather.cs.user.service;
 
-import org.springframework.http.HttpStatus;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.heather.cs.code.mapper.CodeMapper;
+import com.heather.cs.code.dto.UserIdentifier;
+import com.heather.cs.code.dto.UserStatus;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 
@@ -16,16 +20,15 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserMapper userMapper;
-	private final CodeMapper codeMapper;
 
 	@Transactional
 	public void registerUser(User user) {
-		if(userMapper.selectExistsUserId(user.getId())) {
-			throw new IllegalArgumentException("Duplicated Id");
+		if (userMapper.selectExistsUserId(user.getId())) {
+			throw new IllegalArgumentException("Duplicated Id : id = " + user.getId());
 		}
 
-		user.setRole("COUNSELOR");
-		user.setStatus("AVAILABLE");
+		user.setRole(UserIdentifier.COUNSELOR.toString());
+		user.setStatus(UserStatus.AVAILABLE.toString());
 		user.setUseYn("Y");
 		user.setCreatorId(user.getId());
 		user.setModifierId(user.getId());
@@ -34,33 +37,55 @@ public class UserService {
 		userMapper.insertUserHistory(user.getId());
 	}
 
-	// Iteration-2
-	public void changeTheCounselorStatus(String userId, String state) {
-		if(!userMapper.selectExistsUserId(userId)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The userId does not exist : userId = " + userId);
+	public boolean isValidUser(String userId, String password) {
+		User user = userMapper.selectActiveUser(userId);
+		if (!password.equals(user.getPassword())) {
+			throw new IllegalStateException("Password is not correct : userId = " + userId);
 		}
+		return true;
+	}
 
-		String userRole = userMapper.selectUserRole(userId);
-		if(!userRole.equals("COUNSELOR")) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user is not a counselor : userId = " + userId);
-		}
-
-		String GROUP_CODE_OF_COUNSELOR = "COUNSELOR_STATUS";
-		String groupCode = codeMapper.selectGroupCode(state);
-		if(!groupCode.equals(GROUP_CODE_OF_COUNSELOR)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The state value that a counselor cannot have : state = " + state);
-		}
-
-		User user = userMapper.selectUser(userId);
+	@Transactional
+	public void changeStatusOn(String userId) {
+		User user = userMapper.selectActiveUser(userId);
 		String status = user.getStatus();
-		if(status.equals(state)) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "The counselor's status is already " + state);
+		if (status.equals(UserStatus.AVAILABLE.toString())) {
+			throw new IllegalStateException("The counselor's status is already ON");
 		}
 
-		user.setStatus(state);
-		userMapper.updateStatus(user);
+		status = UserStatus.AVAILABLE.toString();
+		Map<String, String> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("status", status);
+		userMapper.updateStatus(map);
 		userMapper.insertUserHistory(userId);
+	}
 
+	@Transactional
+	public void changeStatusOff(User user) {
+		String status = user.getStatus();
+		if (status.equals(UserStatus.UNAVAILABLE.toString())) {
+			throw new IllegalStateException("The counselor's status is already OFF");
+		}
+		status = UserStatus.UNAVAILABLE.toString();
+		Map<String, String> map = new HashMap<>();
+		map.put("userId", user.getId());
+		map.put("status", status);
+		userMapper.updateStatus(map);
+		userMapper.insertUserHistory(user.getId());
+	}
+
+	public void checkManagerPrivileges(String userId) {
+		User user = userMapper.selectActiveUser(userId);
+		if(!user.getRole().equals(UserIdentifier.MANAGER.toString())) {
+			throw new IllegalArgumentException("No Permission : userId = " + userId);
+		}
+	}
+	
+	public void checkCookie(Cookie cookie) {
+		if(cookie == null) {
+			throw new IllegalArgumentException("No LogIn Information");
+		}
 	}
 
 }
