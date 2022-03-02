@@ -2,6 +2,7 @@ package com.heather.cs.user.controller;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class UserController {
 	private static final int COOKIE_MAX_AGE = 18000;
 
 	@PostMapping("/user")
-	public void registerUser(@RequestBody User user) {
+	public void registerUser(@Valid @RequestBody User user) {
 		userService.registerUser(user);
 	}
 

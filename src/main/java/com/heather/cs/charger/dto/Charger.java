@@ -11,5 +11,4 @@ import lombok.Setter;
 public class Charger {
 	private String userId;
 	private int numberOfCounsel;
-
 }

@@ -1,5 +1,7 @@
 package com.heather.cs.counsel.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +23,13 @@ public class CounselController {
 	private final UserService userService;
 
 	@PostMapping("/counsel")
-	public void registerCounsel(@RequestBody Counsel counsel) {
+	public void registerCounsel(@Valid @RequestBody Counsel counsel) {
 		counselService.registerCounsel(counsel);
 	}
 
 	@GetMapping("/counsels/assignment")
 	public void assignCounsels(@LogInUser User user) {
-		if(userService.hasManagerPrivileges(user.getId())) {
+		if (userService.hasManagerPrivileges(user.getId())) {
 			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
 		}
 		counselService.assignCounsels(user.getId());
@@ -35,7 +37,7 @@ public class CounselController {
 
 	@GetMapping("/counsels")
 	public int countCounselsWithoutCharger(@LogInUser User user) {
-		if(userService.hasManagerPrivileges(user.getId())) {
+		if (userService.hasManagerPrivileges(user.getId())) {
 			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
 		}
 		return counselService.countCounselsWithoutCharger(user.getId());
