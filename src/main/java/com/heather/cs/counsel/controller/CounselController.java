@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.heather.cs.annotation.LogInUser;
+import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.counsel.dto.Counsel;
 import com.heather.cs.counsel.service.CounselService;
 import com.heather.cs.user.dto.User;

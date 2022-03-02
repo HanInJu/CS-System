@@ -1,4 +1,4 @@
-package com.heather.cs.interceptor;
+package com.heather.cs.configuration.interceptor;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

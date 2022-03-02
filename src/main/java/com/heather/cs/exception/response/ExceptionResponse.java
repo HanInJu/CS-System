@@ -1,4 +1,4 @@
-package com.heather.cs.error.response;
+package com.heather.cs.exception.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

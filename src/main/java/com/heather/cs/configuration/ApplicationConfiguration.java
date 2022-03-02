@@ -1,6 +1,5 @@
 package com.heather.cs.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-import com.heather.cs.argumentresolver.UserArgumentResolver;
-import com.heather.cs.interceptor.AuthInterceptor;
+import com.heather.cs.configuration.argumentresolver.UserArgumentResolver;
+import com.heather.cs.configuration.interceptor.AuthInterceptor;
 import com.heather.cs.user.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;

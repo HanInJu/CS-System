@@ -1,4 +1,4 @@
-package com.heather.cs.argumentresolver;
+package com.heather.cs.configuration.argumentresolver;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,7 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.heather.cs.annotation.LogInUser;
+import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.user.dto.User;
 
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.heather.cs.error.handler;
+package com.heather.cs.exception.handler;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.heather.cs.error.response.ExceptionResponse;
+import com.heather.cs.exception.response.ExceptionResponse;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
