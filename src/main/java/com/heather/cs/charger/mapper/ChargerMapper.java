@@ -8,7 +8,6 @@ import com.heather.cs.charger.dto.Charger;
 
 @Mapper
 public interface ChargerMapper {
-	List<String> selectManagers(long categoryId);
 	List<Charger> selectAvailableCounselorList(String managerId);
 	Charger selectOneAvailableCounselor(long categoryId);
 	int selectCountUnassignedCounsels(String managerId);

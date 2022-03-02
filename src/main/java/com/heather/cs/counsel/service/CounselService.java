@@ -10,8 +10,8 @@ import com.heather.cs.category.mapper.CategoryMapper;
 import com.heather.cs.charger.ChargerComparableClass;
 import com.heather.cs.charger.dto.Charger;
 import com.heather.cs.charger.mapper.ChargerMapper;
-import com.heather.cs.code.dto.CounselStatus;
-import com.heather.cs.code.dto.UserIdentifier;
+import com.heather.cs.code.CounselStatus;
+import com.heather.cs.code.UserIdentifier;
 import com.heather.cs.counsel.dto.Counsel;
 import com.heather.cs.counsel.mapper.CounselMapper;
 
@@ -99,6 +99,14 @@ public class CounselService {
 
 	public int countCounselsWithoutCharger(String managerId) {
 		return chargerMapper.selectCountUnassignedCounsels(managerId);
+	}
+
+	@Transactional
+	public void updateCounselStatus(Counsel counsel, String counselorId, CounselStatus status) {
+		counsel.setModifierId(counselorId);
+		counsel.setStatus(status.toString());
+		counselMapper.updateCounselStatus(counsel);
+		counselMapper.insertCounselHistory(counsel.getId());
 	}
 
 }

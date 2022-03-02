@@ -1,7 +1,5 @@
 package com.heather.cs.user.mapper;
 
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Mapper;
 
 import com.heather.cs.user.dto.User;

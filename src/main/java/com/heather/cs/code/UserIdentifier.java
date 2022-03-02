@@ -1,4 +1,4 @@
-package com.heather.cs.code.dto;
+package com.heather.cs.code;
 
 public enum UserIdentifier {
 	COUNSELOR,

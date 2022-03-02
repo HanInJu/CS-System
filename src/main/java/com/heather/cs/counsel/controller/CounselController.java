@@ -42,4 +42,5 @@ public class CounselController {
 		}
 		return counselService.countCounselsWithoutCharger(user.getId());
 	}
+
 }

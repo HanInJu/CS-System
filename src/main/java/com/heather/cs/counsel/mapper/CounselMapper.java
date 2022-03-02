@@ -1,6 +1,7 @@
 package com.heather.cs.counsel.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,4 +13,6 @@ public interface CounselMapper {
 	void insertCounselHistory(long counselId);
 	List<Counsel> selectUnassignedCounselList(String managerId);
 	void updateCounselCharger(Counsel counsel);
+	Counsel selectCounselChargedCounselor(Map<String, String> map);
+	void updateCounselStatus(Counsel counsel);
 }

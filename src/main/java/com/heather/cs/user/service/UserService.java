@@ -3,9 +3,9 @@ package com.heather.cs.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.heather.cs.code.dto.ManagerStatus;
-import com.heather.cs.code.dto.UserIdentifier;
-import com.heather.cs.code.dto.CounselorStatus;
+import com.heather.cs.code.ManagerStatus;
+import com.heather.cs.code.UserIdentifier;
+import com.heather.cs.code.CounselorStatus;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 

@@ -30,8 +30,22 @@
         UPDATE counsel
         SET charger_id = #{chargerId},
             modifier_id = #{modifierId},
-            modified_at = now()
+            modified_at = NOW()
         WHERE id = #{id} AND counsel.charger_id IS NULL
+    </update>
+
+    <select id="selectCounselChargedCounselor" parameterType="map" resultType="counsel">
+        SELECT id, status, category_id
+        FROM counsel
+        WHERE charger_id = #{counselorId} AND id = #{counselId} AND status = 'ASSIGNED';
+    </select>
+
+    <update id="updateCounselStatus" parameterType="counsel">
+        UPDATE counsel
+        SET status = #{status},
+            modifier_id = #{modifierId},
+            modified_at = NOW()
+        WHERE id = #{id}
     </update>
 
 </mapper>
