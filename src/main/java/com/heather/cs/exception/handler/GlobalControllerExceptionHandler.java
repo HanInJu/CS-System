@@ -13,15 +13,19 @@ import com.heather.cs.exception.response.ExceptionResponse;
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
 
-	@ExceptionHandler({
-		MethodArgumentNotValidException.class,
-	    IllegalArgumentException.class,
-	    IllegalStateException.class
-	})
+	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> handleMethodArgumentNotValid(
 		MethodArgumentNotValidException argumentNotValidException, HttpServletRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(request.getRequestURI(),
 			argumentNotValidException.getBindingResult().toString());
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+	public ResponseEntity<Object> handleIllegalException(Exception illegalException,
+		HttpServletRequest request) {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(request.getRequestURI(),
+			illegalException.getMessage());
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 
