@@ -41,6 +41,8 @@ public class CounselController {
 			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
 		}
 		return counselService.countCounselsWithoutCharger(user.getId());
+		// 이런 식으로 int만 덜렁 주는 건 나혼자 다 개발할 때지,
+		// 누가 다른 사람과 협업할 경우 명세가 있어야 한다. 규격 잘 만들어보기
 	}
 
 }

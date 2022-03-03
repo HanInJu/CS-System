@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ExceptionResponse {
-	private String requestURI;
+	private String requestURI; // 필요없음
 	private String details;
 }

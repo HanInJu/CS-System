@@ -22,11 +22,14 @@ public class GlobalControllerExceptionHandler {
 	}
 
 	@ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-	public ResponseEntity<Object> handleIllegalException(Exception illegalException,
+	public ResponseEntity<Object> handleIllegalException(Exception illegalException, // 제네릭에 Object를 쓰는 건 의미가 없음
 		HttpServletRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(request.getRequestURI(),
-			illegalException.getMessage());
+			illegalException.getMessage()); // 내부 메시지인데 외부로 반출하지 말기
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+		// 메시지만 남길거면 굳이 엔티티 객체를 만들어서 리턴할 필요가 없음
+		// 넘길 때 규격을 정해서 줘야 하는데
+		// 다른 오픈API를 보면 규격이 있는데 그 규격을 참고해서 일정한 규격으로 리턴하기 바람
 	}
 
 	@ExceptionHandler(Exception.class)
