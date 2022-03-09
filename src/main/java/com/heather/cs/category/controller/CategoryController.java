@@ -23,9 +23,16 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@GetMapping("/category/{categoryId}/subcategory")
-	public ResponseEntity<Response<List<Category>>> getSubcategory(@PathVariable long categoryId) {
+	public ResponseEntity<Response<Object>> getSubcategory(@PathVariable long categoryId) {
+		if (!categoryService.isExistCategory(categoryId)) {
+			String message = "Invalid Category (categoryId : " + categoryId + ")";
+			return new ResponseEntity<>(
+				new Response<>(ResponseCode.NOT_VALID_CATEGORY, message),
+				HttpStatus.BAD_REQUEST);
+		}
 		List<Category> subcategories = categoryService.getSubcategory(categoryId);
-		return new ResponseEntity<>(new Response<>(ResponseCode.SUCCESS, ResponseMessage.SUCCESS,
+		return new ResponseEntity<>(
+			new Response<>(ResponseCode.SUCCESS, ResponseMessage.SUCCESS,
 			subcategories), HttpStatus.OK);
 
 	}

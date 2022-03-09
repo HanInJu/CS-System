@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -16,6 +17,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.heather.cs.configuration.argumentresolver.UserArgumentResolver;
 import com.heather.cs.configuration.interceptor.AuthenticationInterceptor;
 import com.heather.cs.configuration.interceptor.ManagerPrivilegeInterceptor;
+import com.heather.cs.converter.DateConverter;
+import com.heather.cs.converter.DateFormatter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +46,14 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
 			.excludePathPatterns("/user")
 			.excludePathPatterns("/logIn");
 		registry.addInterceptor(managerPrivilegeInterceptor)
-			.addPathPatterns("/counsels/**");
+			.addPathPatterns("/counsels/**")
+			.addPathPatterns("/statistics/**");
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(new DateConverter());
+		// registry.addFormatter(new DateFormatter());
 	}
 
 	@Override

@@ -1,0 +1,22 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heather.cs.statistics.mapper.StatisticsMapper">
+
+    <select id="selectCounselStatistics" parameterType="statisticsDto" resultType="statistics">
+        SELECT DATE(c.created_at) date,
+        COUNT(c.id) registeredCounsels,
+        COUNT(IF(DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &lt; 2, 1, null)) normalCounsels,
+        COUNT(IF((DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &gt; 2) || (ISNULL(a.created_at)), 1, null)) delayedCounsels
+        FROM counsel c
+        LEFT JOIN answer a on c.id = a.counsel_id
+        WHERE c.category_id = #{categoryId} AND c.created_at BETWEEN #{startDate} AND #{endDate}
+        GROUP BY date;
+    </select>
+
+    <select id="selectCounselorStatistics" parameterType="statisticsDto" resultType="statistics">
+
+    </select>
+
+
+</mapper>

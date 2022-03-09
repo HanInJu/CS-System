@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class Response<T> {
-	private int code;
-	private String message;
+	private final int code;
+	private final String message;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T data;
 

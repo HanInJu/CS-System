@@ -6,12 +6,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import com.heather.cs.category.dto.Category;
 import com.heather.cs.category.mapper.CategoryMapper;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 
     private final CategoryMapper categoryMapper;
+
+    public boolean isExistCategory(long categoryId) {
+        return categoryMapper.selectExistsCategory(categoryId);
+    }
 
     public List<Category> getSubcategory(long categoryId) {
         if(!categoryMapper.selectExistsCategory(categoryId)) {
