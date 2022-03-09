@@ -19,6 +19,7 @@
                modifier_id,
                modified_at
         FROM answer
+        WHERE id = #{answerId}
     </insert>
 
 </mapper>
