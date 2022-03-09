@@ -8,39 +8,39 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.heather.cs.exception.response.ExceptionResponse;
+import com.heather.cs.response.Response;
 import com.heather.cs.response.code.ResponseCode;
 
 @RestControllerAdvice
-public class GlobalControllerExceptionHandler {
+public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValid(
+	public ResponseEntity<Response> handleMethodArgumentNotValid(
 		MethodArgumentNotValidException argumentNotValidException) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ResponseCode.NOT_VALID_ARGUMENT,
+		Response response = new Response(ResponseCode.NOT_VALID_ARGUMENT,
 			makeValidationMessage(argumentNotValidException));
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(Exception illegalException) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ResponseCode.ILLEGAL_ARGUMENT,
+	public ResponseEntity<Response> handleIllegalArgumentException(Exception illegalException) {
+		Response response = new Response(ResponseCode.ILLEGAL_ARGUMENT,
 			illegalException.getMessage());
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<ExceptionResponse> handleIllegalStateException(Exception illegalException) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ResponseCode.ILLEGAL_STATE,
+	public ResponseEntity<Response> handleIllegalStateException(Exception illegalException) {
+		Response response = new Response(ResponseCode.ILLEGAL_STATE,
 			illegalException.getMessage());
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
-		ExceptionResponse exceptionResponse = new ExceptionResponse(ResponseCode.INTERNAL_SERVER_ERROR,
+	public ResponseEntity<Response> handleException(Exception exception) {
+		Response response = new Response(ResponseCode.INTERNAL_SERVER_ERROR,
 			exception.getMessage());
-		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	public String makeValidationMessage(MethodArgumentNotValidException exception) {

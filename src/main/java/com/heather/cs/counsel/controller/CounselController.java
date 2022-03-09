@@ -2,6 +2,8 @@ package com.heather.cs.counsel.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.counsel.dto.Counsel;
 import com.heather.cs.counsel.service.CounselService;
+import com.heather.cs.response.Response;
+import com.heather.cs.response.code.ResponseCode;
+import com.heather.cs.response.message.ResponseMessage;
 import com.heather.cs.user.dto.User;
-import com.heather.cs.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,29 +24,28 @@ import lombok.RequiredArgsConstructor;
 public class CounselController {
 
 	private final CounselService counselService;
-	private final UserService userService;
 
 	@PostMapping("/counsel")
-	public void registerCounsel(@Valid @RequestBody Counsel counsel) {
+	public ResponseEntity<Response> registerCounsel(@Valid @RequestBody Counsel counsel) {
 		counselService.registerCounsel(counsel);
+		return new ResponseEntity<>(new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS), HttpStatus.OK);
 	}
 
 	@GetMapping("/counsels/assignment")
-	public void assignCounsels(@LogInUser User user) {
-		if (userService.hasManagerPrivileges(user.getId())) {
-			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
-		}
+	public ResponseEntity<Response> assignCounsels(@LogInUser User user) {
 		counselService.assignCounsels(user.getId());
+		return new ResponseEntity<>(new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS), HttpStatus.OK);
 	}
 
 	@GetMapping("/counsels")
-	public int countCounselsWithoutCharger(@LogInUser User user) {
-		if (userService.hasManagerPrivileges(user.getId())) {
-			throw new IllegalArgumentException("No Permission : userId = " + user.getId());
+	public ResponseEntity<Response<Integer>> countCounselsWithoutCharger(@LogInUser User user) {
+		int numberOfCounsels = counselService.countCounselsWithoutCharger(user.getId());
+		if (numberOfCounsels == 0) {
+			return new ResponseEntity<Response<Integer>>(
+				new Response(ResponseCode.SUCCESS, "All counsels are assigned."), HttpStatus.OK);
 		}
-		return counselService.countCounselsWithoutCharger(user.getId());
-		// 이런 식으로 int만 덜렁 주는 건 나혼자 다 개발할 때지,
-		// 누가 다른 사람과 협업할 경우 명세가 있어야 한다. 규격 잘 만들어보기
+		return new ResponseEntity<Response<Integer>>(
+			new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, numberOfCounsels), HttpStatus.OK);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.heather.cs.user.dto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import org.apache.ibatis.type.Alias;
 
@@ -16,12 +17,15 @@ import lombok.Setter;
 public class User {
 
 	@NotBlank(message = "The id field is mandatory")
+	@Size(max = 20, message = "Title must be 20 characters or less")
 	private String id;
 
 	@NotBlank(message = "The name field is mandatory")
+	@Size(max = 20, message = "Title must be 20 characters or less")
 	private String name;
 
 	@NotBlank(message = "The message field is mandatory")
+	@Size(max = 20, message = "Title must be 20 characters or less")
 	private String password;
 	private String role;
 	private String status;
