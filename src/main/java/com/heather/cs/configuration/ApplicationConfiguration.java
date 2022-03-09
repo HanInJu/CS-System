@@ -14,8 +14,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.heather.cs.configuration.argumentresolver.UserArgumentResolver;
-import com.heather.cs.configuration.interceptor.AuthInterceptor;
-import com.heather.cs.user.mapper.UserMapper;
+import com.heather.cs.configuration.interceptor.AuthenticationInterceptor;
+import com.heather.cs.configuration.interceptor.ManagerPrivilegeInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,18 +27,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationConfiguration implements WebMvcConfigurer {
 
-	private final UserMapper userMapper;
+	private final AuthenticationInterceptor authenticationInterceptor;
+	private final ManagerPrivilegeInterceptor managerPrivilegeInterceptor;
+	private final UserArgumentResolver userArgumentResolver;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new UserArgumentResolver());
+		resolvers.add(userArgumentResolver);
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new AuthInterceptor(userMapper))
+		registry.addInterceptor(authenticationInterceptor)
+			.excludePathPatterns("/")
 			.excludePathPatterns("/user")
 			.excludePathPatterns("/logIn");
+		registry.addInterceptor(managerPrivilegeInterceptor)
+			.addPathPatterns("/counsels/**");
 	}
 
 	@Override

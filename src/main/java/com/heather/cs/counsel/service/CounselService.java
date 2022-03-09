@@ -101,12 +101,4 @@ public class CounselService {
 		return chargerMapper.selectCountUnassignedCounsels(managerId);
 	}
 
-	@Transactional
-	public void updateCounselStatus(Counsel counsel, String counselorId, CounselStatus status) {
-		counsel.setModifierId(counselorId);
-		counsel.setStatus(status.toString());
-		counselMapper.updateCounselStatus(counsel);
-		counselMapper.insertCounselHistory(counsel.getId());
-	}
-
 }
