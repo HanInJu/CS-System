@@ -31,8 +31,6 @@ public class StatisticsRequestDto {
 	private long categoryId;
 
 	public boolean isProperPeriod() {
-		System.out.println(this.startDate + " +30 " + (this.endDate.minusDays(30)));
-		System.out.println(this.startDate.isAfter(this.endDate.minusDays(30)));
 		return this.startDate.isAfter(this.endDate.minusDays(30));
 	}
 

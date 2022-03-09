@@ -5,17 +5,28 @@
 
     <select id="selectCounselStatistics" parameterType="statisticsDto" resultType="statistics">
         SELECT DATE(c.created_at) date,
-        COUNT(c.id) registeredCounsels,
-        COUNT(IF(DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &lt; 2, 1, null)) normalCounsels,
-        COUNT(IF((DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &gt; 2) || (ISNULL(a.created_at)), 1, null)) delayedCounsels
+            COUNT(c.id) registeredCounsels,
+            COUNT(IF(DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &lt; 2, 1, NULL)) completedCounsels,
+            COUNT(IF((DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &gt; 2) || (ISNULL(a.created_at)), 1, NULL)) delayedCounsels
         FROM counsel c
-        LEFT JOIN answer a on c.id = a.counsel_id
-        WHERE c.category_id = #{categoryId} AND c.created_at BETWEEN #{startDate} AND #{endDate}
+        LEFT JOIN answer a ON c.id = a.counsel_id
+        WHERE c.category_id = #{categoryId}
+          AND c.created_at BETWEEN #{startDate} AND #{endDate}
         GROUP BY date;
     </select>
 
     <select id="selectCounselorStatistics" parameterType="statisticsDto" resultType="statistics">
-
+        SELECT DATE(c.created_at) date,
+            c.charger_id counselorId,
+            COUNT(a.id) completedCounsels,
+            COUNT(IF(DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &lt; 2, 1, NULL)) counselsProcessedNormally,
+            COUNT(IF((DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &gt; 2) || (ISNULL(a.created_at)), 1, NULL)) delayedCounsels
+        FROM counsel c
+        LEFT JOIN answer a ON c.id = a.counsel_id
+        WHERE c.category_id = #{categoryId}
+          AND c.created_at BETWEEN #{startDate} AND #{endDate}
+        GROUP BY counselorId, date
+        ORDER BY completedCounsels;
     </select>
 
 
