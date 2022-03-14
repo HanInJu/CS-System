@@ -44,7 +44,8 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(authenticationInterceptor)
 			.excludePathPatterns("/")
 			.excludePathPatterns("/user")
-			.excludePathPatterns("/logIn");
+			.excludePathPatterns("/logIn")
+			.excludePathPatterns("/batch/**");
 		registry.addInterceptor(managerPrivilegeInterceptor)
 			.addPathPatterns("/counsels/**")
 			.addPathPatterns("/statistics/**");
