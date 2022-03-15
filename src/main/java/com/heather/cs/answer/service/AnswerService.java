@@ -26,16 +26,16 @@ public class AnswerService {
 	public void registerAnswerForCounsel(Answer answer, User user) {
 		long counselId = answer.getCounselId();
 		String counselorId = user.getId();
+
 		Counsel counsel = getCounselChargedCounselor(counselId, counselorId);
 		if (counsel == null) {
 			throw new IllegalArgumentException("Not Privileged User for Counsel. counselId : " + counselId);
 		}
-		answer.setCreatorId(counselorId);
-		answer.setModifierId(counselorId);
+
+		setCreatorAndModifier(answer, counselorId);
 		registerAnswer(answer);
 
-		counsel.setModifierId(counselorId);
-		counsel.setStatus(CounselStatus.COMPLETED.toString());
+		changeStatusAndModifier(counsel, CounselStatus.COMPLETED, counselorId);
 		updateCounsel(counsel);
 	}
 
@@ -46,9 +46,19 @@ public class AnswerService {
 		return counselMapper.selectCounselChargedCounselor(map);
 	}
 
+	public void setCreatorAndModifier(Answer answer, String userId) {
+		answer.setCreatorId(userId);
+		answer.setModifierId(userId);
+	}
+
 	public void registerAnswer(Answer answer) {
 		answerMapper.insertAnswer(answer);
 		answerMapper.insertAnswerInHistory(answer.getId());
+	}
+
+	public void changeStatusAndModifier(Counsel counsel, CounselStatus status, String userId) {
+		counsel.setModifierId(userId);
+		counsel.setStatus(status.toString());
 	}
 
 	public void updateCounsel(Counsel counsel) {
