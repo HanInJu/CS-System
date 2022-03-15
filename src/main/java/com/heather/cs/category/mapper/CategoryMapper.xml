@@ -12,6 +12,7 @@
     <select id="selectSubcategory" parameterType="long" resultType="category">
         SELECT id,
                name,
+               description,
                use_yn,
                depth
         FROM category
@@ -28,6 +29,7 @@
         SELECT id,
                parent_id,
                name,
+               description,
                use_yn,
                depth
         FROM category

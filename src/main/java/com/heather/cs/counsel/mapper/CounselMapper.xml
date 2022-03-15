@@ -46,7 +46,7 @@
           AND counsel.charger_id IS NULL
     </update>
 
-    <select id="selectCounselChargedCounselor" parameterType="map" resultType="counsel">
+    <select id="selectAssignedCounsel" parameterType="map" resultType="counsel">
         SELECT id, status, category_id
         FROM counsel
         WHERE charger_id = #{counselorId}

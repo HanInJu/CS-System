@@ -26,31 +26,44 @@ public class AnswerService {
 	public void registerAnswerForCounsel(Answer answer, User user) {
 		long counselId = answer.getCounselId();
 		String counselorId = user.getId();
-		Counsel counsel = getCounselChargedCounselor(counselId, counselorId);
+
+		Counsel counsel = getAssignedCounsel(counselId, counselorId);
 		if (counsel == null) {
 			throw new IllegalArgumentException("Not Privileged User for Counsel. counselId : " + counselId);
 		}
-		answer.setCreatorId(counselorId);
-		answer.setModifierId(counselorId);
+
+		setCreatorAndModifier(answer, counselorId);
 		registerAnswer(answer);
 
-		counsel.setModifierId(counselorId);
-		counsel.setStatus(CounselStatus.COMPLETED.toString());
-		counselMapper.updateCounselStatus(counsel);
-		counselMapper.insertCounselHistory(counsel.getId());
-
+		changeStatusAndModifier(counsel, CounselStatus.COMPLETED, counselorId);
+		updateCounsel(counsel);
 	}
 
-	public Counsel getCounselChargedCounselor(long counselId, String counselorId) {
+	public Counsel getAssignedCounsel(long counselId, String counselorId) {
 		Map<String, String> map = new HashMap<>();
 		map.put("counselId", String.valueOf(counselId));
 		map.put("counselorId", counselorId);
-		return counselMapper.selectCounselChargedCounselor(map);
+		return counselMapper.selectAssignedCounsel(map);
+	}
+
+	public void setCreatorAndModifier(Answer answer, String userId) {
+		answer.setCreatorId(userId);
+		answer.setModifierId(userId);
 	}
 
 	public void registerAnswer(Answer answer) {
 		answerMapper.insertAnswer(answer);
 		answerMapper.insertAnswerInHistory(answer.getId());
+	}
+
+	public void changeStatusAndModifier(Counsel counsel, CounselStatus status, String userId) {
+		counsel.setModifierId(userId);
+		counsel.setStatus(status);
+	}
+
+	public void updateCounsel(Counsel counsel) {
+		counselMapper.updateCounselStatus(counsel);
+		counselMapper.insertCounselHistory(counsel.getId());
 	}
 
 }

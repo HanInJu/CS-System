@@ -13,6 +13,6 @@ public interface CounselMapper {
 	void insertCounselHistory(long counselId);
 	List<Counsel> selectUnassignedCounselList(String managerId);
 	void updateCounselCharger(Counsel counsel);
-	Counsel selectCounselChargedCounselor(Map<String, String> map);
+	Counsel selectAssignedCounsel(Map<String, String> map);
 	void updateCounselStatus(Counsel counsel);
 }
