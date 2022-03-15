@@ -11,8 +11,9 @@ import lombok.Getter;
 @Getter
 @Component
 public class Response<T> {
-	private final int code;
-	private final String message;
+	private int code;
+	private String message;
+
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T data;
 

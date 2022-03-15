@@ -17,14 +17,11 @@ public class StatisticsService {
 
 	private final StatisticsMapper statisticsMapper;
 
-	public List<Statistics> getCounselStatistics(User user, StatisticsRequestDto requestDto) {
-		List<Statistics> statisticsList = statisticsMapper.selectCounselStatistics(requestDto);
-		return statisticsList;
+	public List<Statistics> getCounselStatistics(StatisticsRequestDto requestDto) {
+		return statisticsMapper.selectCounselStatistics(requestDto);
 	}
 
-	public List<Statistics> getCounselorStatistics(User user, StatisticsRequestDto requestDto) {
-		List<Statistics> statisticsList = statisticsMapper.selectCounselorStatistics(requestDto);
-
-		return statisticsList;
+	public List<Statistics> getCounselorStatistics(StatisticsRequestDto requestDto) {
+		return statisticsMapper.selectCounselorStatistics(requestDto);
 	}
 }

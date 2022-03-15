@@ -29,24 +29,20 @@ public class StatisticsController {
 	private final Response response;
 
 	@GetMapping("/statistics/counsel")
-	public Response<List<Statistics>> getCounselStatistics(@LogInUser User user,
-		@RequestBody StatisticsRequestDto requestDto) {
-
+	public Response<List<Statistics>> getCounselStatistics(@RequestBody StatisticsRequestDto requestDto) {
 		validateDuration(requestDto);
 		validateCategory(requestDto.getCategoryId());
 
-		List<Statistics> statisticsList = statisticsService.getCounselStatistics(user, requestDto);
+		List<Statistics> statisticsList = statisticsService.getCounselStatistics(requestDto);
 		return response.withData(statisticsList);
 	}
 
 	@GetMapping("/statistics/counselor")
-	public Response<List<Statistics>> getCounselorStatistics(@LogInUser User user,
-		@RequestBody StatisticsRequestDto requestDto) {
-
+	public Response<List<Statistics>> getCounselorStatistics(@RequestBody StatisticsRequestDto requestDto) {
 		validateDuration(requestDto);
 		validateCategory(requestDto.getCategoryId());
 
-		List<Statistics> statisticsList = statisticsService.getCounselorStatistics(user, requestDto);
+		List<Statistics> statisticsList = statisticsService.getCounselorStatistics(requestDto);
 		return response.withData(statisticsList);
 	}
 
