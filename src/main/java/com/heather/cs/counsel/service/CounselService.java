@@ -30,6 +30,9 @@ public class CounselService {
 		validateCategory(counsel.getCategoryId());
 
 		Charger counselor = chargerMapper.selectOneAvailableCounselor(counsel.getCategoryId());
+		if(counselor == null) {
+			throw new IllegalStateException("There are no Counselors available.");
+		}
 		counsel.setChargerId(counselor.getUserId());
 		counsel.setCreatorId(UserIdentifier.SYSTEM.toString());
 		counsel.setModifierId(UserIdentifier.SYSTEM.toString());
