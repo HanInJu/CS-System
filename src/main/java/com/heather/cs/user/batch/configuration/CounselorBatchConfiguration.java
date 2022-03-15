@@ -46,10 +46,14 @@ public class CounselorBatchConfiguration {
 	private final StepBuilderFactory stepBuilderFactory;
 	private final DataSource dataSource;
 
-	private final int chunkSize = 10;
+	private final int chunkSize = 10; // 만 단위까지는 쿼리로 처리하는데 상담원은 만 명보다 적어서 보통 이런 건 tasklet으로 처리한다.
+	//tasklet으로 User 테이블 update 후 for로 history insert하면 문제 없어보임
+
+	//tasklet, chunk : transaction 단위가 다르지
+	//그래서 이번에 tasklet으로 하는 게 더 나음(transaction) : 상담원이 많지 않으니까!
 
 	@Bean
-	public Job counselorStatusOffJob() throws Exception { //@Scheduled(cron =  "0 0 19 * * ?")
+	public Job counselorStatusOffJob() throws Exception {
 		return jobBuilderFactory.get(JOB_NAME)
 			.start(counselorStatusOffStep())
 			.build();
@@ -71,6 +75,9 @@ public class CounselorBatchConfiguration {
 		Map<String, Object> parameterMap = Maps.newHashMap();
 		parameterMap.put("status", CounselorStatus.AVAILABLE.toString());
 		parameterMap.put("use_yn", "Y");
+
+		//mybatis mapper로 페이징처리해서 read하고 write도 mybatis로 처리하는 편임!
+		//쿼리를 String으로 만들면 실수하기 쉬우니까
 
 		return new JdbcPagingItemReaderBuilder<User>()
 			.pageSize(chunkSize)
@@ -99,7 +106,8 @@ public class CounselorBatchConfiguration {
 	}
 
 	@Bean
-	public ItemProcessor<User, User> counselorStatusOffProcessor() {
+	public ItemProcessor<User, User> counselorStatusOffProcessor() { // 그냥 쿼리로 처리하는 게 나았을 수도?
+		// 동적쿼리 만들 때 IN 절 조건 개수 찾아보고
 		return user -> {
 			user.setStatus(CounselorStatus.UNAVAILABLE.toString());
 			user.setModifierId("SYSTEM");

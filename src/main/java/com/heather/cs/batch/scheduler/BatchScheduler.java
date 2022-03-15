@@ -30,6 +30,7 @@ public class BatchScheduler {
 	public void runChangeUserStatusJob() {
 		try {
 			jobLauncher.run(counselorBatchConfiguration.counselorStatusOffJob(), new JobParameters());
+			// 리턴이 Execution
 		} catch (Exception exception) {
 			log.error(exception.getMessage());
 		}

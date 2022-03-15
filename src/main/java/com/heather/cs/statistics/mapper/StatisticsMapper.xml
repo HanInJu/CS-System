@@ -2,7 +2,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.heather.cs.statistics.mapper.StatisticsMapper">
-
+<!--    날짜기준 조회를 많이 하는데 index를 날짜로 준다. -->
+<!--categoryId랑 created_at 복합키, created_At 인덱스-->
     <select id="selectCounselStatistics" parameterType="statisticsDto" resultType="statistics">
         SELECT DATE(c.created_at) date,
             COUNT(c.id) registeredCounsels,
@@ -14,7 +15,7 @@
           AND c.created_at BETWEEN #{startDate} AND #{endDate}
         GROUP BY date
     </select>
-
+<!-- alias 테이블에만 생략하고 컬럼에는 AS 꼭 써주기 -->
     <select id="selectCounselorStatistics" parameterType="statisticsDto" resultType="statistics">
         SELECT DATE(c.created_at) date,
             c.charger_id counselorId,
@@ -28,6 +29,6 @@
         GROUP BY counselorId, date
         ORDER BY counselsProcessedNormally DESC
     </select>
-
-
+<!--   COUNT IF 대신 SUM으로 처리하는 방법도 있다.-->
+<!--쿼리 짤 때 GROUP BY 절 빼고는 unique가 보장되지 않는다. 그래서 MAX 같은 걸 쓰기도 한다.-->
 </mapper>

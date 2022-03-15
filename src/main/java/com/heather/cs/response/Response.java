@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @Component
-public class Response<T> {
+public class Response<T> { //성공일 경우 Static object
 	private int code;
 	private String message;
 
