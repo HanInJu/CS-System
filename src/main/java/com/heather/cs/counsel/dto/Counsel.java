@@ -37,6 +37,7 @@ public class Counsel {
 	@NotBlank(message = "The customerEmail field is mandatory")
 	@Size(max = 25, message = "Title must be 25 characters or less")
 	private String customerEmail;
+
 	private String status;
 	private String creatorId;
 	private String modifierId;

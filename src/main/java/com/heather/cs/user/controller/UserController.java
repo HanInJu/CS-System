@@ -24,36 +24,42 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
+	private final Response successResponse;
 	private final UserService userService;
 	private static final String LOGIN_COOKIE = "userIdCookie";
 	private static final int COOKIE_MAX_AGE = 18000;
 
 	@PostMapping("/user")
-	public ResponseEntity<Response> registerUser(@Valid @RequestBody User user) {
+	public Response registerUser(@Valid @RequestBody User user) {
 		userService.registerUser(user);
-		return new ResponseEntity<>(new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS), HttpStatus.OK);
+		return successResponse;
 	}
 
 	@PostMapping("/logIn")
-	public ResponseEntity<Response> logIn(HttpServletResponse response, @RequestBody User user) {
+	public Response logIn(HttpServletResponse response, @RequestBody User user) {
 		if(userService.isValidUser(user.getId(), user.getPassword())) {
-			Cookie userIdCookie = new Cookie(LOGIN_COOKIE, user.getId());
-			userIdCookie.setMaxAge(COOKIE_MAX_AGE);
-			response.addCookie(userIdCookie);
+			Cookie userCookie = generateCookie(LOGIN_COOKIE, user.getId(), COOKIE_MAX_AGE);
+			response.addCookie(userCookie);
 		}
-		return new ResponseEntity<>(new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS), HttpStatus.OK);
+		return successResponse;
 	}
 
 	@PatchMapping("/user/status/on")
-	public ResponseEntity<Response> changeStatusOn(@LogInUser User user) {
+	public Response changeStatusOn(@LogInUser User user) {
 		userService.changeStatusOn(user);
-		return new ResponseEntity<>(new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS), HttpStatus.OK);
+		return successResponse;
 	}
 
 	@PatchMapping("/user/status/off")
-	public ResponseEntity<Response> changeStatusOff(@LogInUser User user) {
+	public Response changeStatusOff(@LogInUser User user) {
 		userService.changeStatusOff(user);
-		return new ResponseEntity<>(new Response(ResponseCode.SUCCESS, ResponseMessage.SUCCESS), HttpStatus.OK);
+		return successResponse;
 	}
 
+
+	public Cookie generateCookie(String cookieName, String cookieValue, int maxAge) {
+		Cookie cookie = new Cookie(cookieName, cookieValue);
+		cookie.setMaxAge(maxAge);
+		return cookie;
+	}
 }
