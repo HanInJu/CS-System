@@ -36,9 +36,7 @@ public class AnswerService {
 
 		counsel.setModifierId(counselorId);
 		counsel.setStatus(CounselStatus.COMPLETED.toString());
-		counselMapper.updateCounselStatus(counsel);
-		counselMapper.insertCounselHistory(counsel.getId());
-
+		updateCounsel(counsel);
 	}
 
 	public Counsel getCounselChargedCounselor(long counselId, String counselorId) {
@@ -51,6 +49,11 @@ public class AnswerService {
 	public void registerAnswer(Answer answer) {
 		answerMapper.insertAnswer(answer);
 		answerMapper.insertAnswerInHistory(answer.getId());
+	}
+
+	public void updateCounsel(Counsel counsel) {
+		counselMapper.updateCounselStatus(counsel);
+		counselMapper.insertCounselHistory(counsel.getId());
 	}
 
 }
