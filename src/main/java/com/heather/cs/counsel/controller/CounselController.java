@@ -21,27 +21,27 @@ import lombok.RequiredArgsConstructor;
 public class CounselController {
 
 	private final CounselService counselService;
-	private final Response successResponse;
+	private final Response response;
 
 	@PostMapping("/counsel")
 	public Response registerCounsel(@Valid @RequestBody Counsel counsel) {
 		counselService.registerCounsel(counsel);
-		return successResponse;
+		return response.successResponse();
 	}
 
 	@GetMapping("/counsels/assignment")
 	public Response assignCounsels(@LogInUser User user) {
 		counselService.assignCounsels(user.getId());
-		return successResponse;
+		return response.successResponse();
 	}
 
 	@GetMapping("/counsels")
 	public Response countCounselsWithoutCharger(@LogInUser User user) {
 		int numberOfCounsels = counselService.countCounselsWithoutCharger(user.getId());
 		if (numberOfCounsels == 0) {
-			return successResponse.messageResponse(ResponseMessage.ALL_ASSIGNED);
+			return response.messageResponse(ResponseMessage.ALL_ASSIGNED);
 		}
-		return successResponse.withData(numberOfCounsels);
+		return response.withData(numberOfCounsels);
 	}
 
 }

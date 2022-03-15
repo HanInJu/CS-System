@@ -19,12 +19,12 @@ import lombok.RequiredArgsConstructor;
 public class AnswerController {
 
 	private final AnswerService answerService;
-	private final Response successResponse;
+	private final Response response;
 
 	@PostMapping("/answer/counsel")
 	public Response registerAnswerForCounsel(@Valid @RequestBody Answer answer, @LogInUser User user) {
 		answerService.registerAnswerForCounsel(answer, user);
-		return successResponse;
+		return response.successResponse();
 	}
 
 }

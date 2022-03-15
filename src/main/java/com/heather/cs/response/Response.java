@@ -21,15 +21,10 @@ public class Response<T> {
 		this.message = ResponseMessage.SUCCESS;
 	}
 
-	public Response(int code, String message) {
-		this.code =  code;
-		this.message = message;
-	}
-
-	public Response(int code, String message, T data) {
-		this.code =  code;
-		this.message = message;
-		this.data = data;
+	public Response successResponse() {
+		this.code = ResponseCode.SUCCESS;
+		this.message = ResponseMessage.SUCCESS;
+		return this;
 	}
 
 	public Response errorResponse(int code, String message) {
@@ -39,11 +34,14 @@ public class Response<T> {
 	}
 
 	public Response messageResponse(String message) {
+		this.code = ResponseCode.SUCCESS;
 		this.message = message;
 		return this;
 	}
 
 	public Response<T> withData(T data) {
+		this.code = ResponseCode.SUCCESS;
+		this.message = ResponseMessage.SUCCESS;
 		this.data = data;
 		return this;
 	}

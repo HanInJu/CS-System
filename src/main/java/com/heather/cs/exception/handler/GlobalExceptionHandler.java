@@ -6,57 +6,62 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.heather.cs.response.Response;
 import com.heather.cs.response.code.ResponseCode;
 
+import lombok.RequiredArgsConstructor;
+
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
+	private final Response response;
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Response> handleMethodArgumentNotValid(
-		MethodArgumentNotValidException argumentNotValidException) {
-		Response response = new Response(ResponseCode.NOT_VALID_ARGUMENT,
-			makeValidationMessage(argumentNotValidException));
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	public Response handleMethodArgumentNotValid(MethodArgumentNotValidException argumentNotValidException) {
+		return response.errorResponse(ResponseCode.NOT_VALID_ARGUMENT, getValidationMessage(argumentNotValidException));
 	}
 
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<Response> handleIllegalArgumentException(Exception illegalException) {
-		Response response = new Response(ResponseCode.ILLEGAL_ARGUMENT,
-			illegalException.getMessage());
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	public Response handleIllegalArgumentException(Exception illegalException) {
+		return response.errorResponse(ResponseCode.ILLEGAL_ARGUMENT, illegalException.getMessage());
 	}
 
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(IllegalStateException.class)
-	public ResponseEntity<Response> handleIllegalStateException(Exception illegalException) {
-		Response response = new Response(ResponseCode.ILLEGAL_STATE,
-			illegalException.getMessage());
-		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	public Response handleIllegalStateException(Exception illegalException) {
+		return response.errorResponse(ResponseCode.ILLEGAL_STATE, illegalException.getMessage());
 	}
 
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Response> handleException(Exception exception) {
-		Response response = new Response(ResponseCode.INTERNAL_SERVER_ERROR,
-			exception.getMessage());
-		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	public Response handleException(Exception exception) {
+		return response.errorResponse(ResponseCode.INTERNAL_SERVER_ERROR, exception.getMessage());
 	}
 
-	public String makeValidationMessage(MethodArgumentNotValidException exception) {
+	public String getValidationMessage(MethodArgumentNotValidException exception) {
 		BindingResult bindingResult = exception.getBindingResult();
-		StringBuilder message = new StringBuilder();
+		return makeMessage(bindingResult);
+	}
+
+	public String makeMessage(BindingResult bindingResult) {
+		String message = "";
 		for (FieldError fieldError : bindingResult.getFieldErrors()) {
-			message.append("[");
-			message.append(fieldError.getField());
-			message.append("] ");
-			message.append(fieldError.getDefaultMessage());
-			message.append(" (");
-			message.append(fieldError.getField());
-			message.append(" : ");
-			message.append(fieldError.getRejectedValue());
-			message.append(") ");
+			message += "[";
+			message += fieldError.getField();
+			message += "] ";
+			message += fieldError.getDefaultMessage();
+			message += " (";
+			message += fieldError.getField();
+			message += " : ";
+			message += fieldError.getRejectedValue();
+			message += ") ";
 		}
-		return message.toString();
+		return message;
 	}
 }

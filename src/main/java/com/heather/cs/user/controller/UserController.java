@@ -4,8 +4,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.response.Response;
-import com.heather.cs.response.code.ResponseCode;
-import com.heather.cs.response.message.ResponseMessage;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.service.UserService;
 
@@ -24,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-	private final Response successResponse;
+	private final Response response;
 	private final UserService userService;
 	private static final String LOGIN_COOKIE = "userIdCookie";
 	private static final int COOKIE_MAX_AGE = 18000;
@@ -32,7 +28,7 @@ public class UserController {
 	@PostMapping("/user")
 	public Response registerUser(@Valid @RequestBody User user) {
 		userService.registerUser(user);
-		return successResponse;
+		return response.successResponse();
 	}
 
 	@PostMapping("/logIn")
@@ -41,19 +37,19 @@ public class UserController {
 			Cookie userCookie = generateCookie(LOGIN_COOKIE, user.getId(), COOKIE_MAX_AGE);
 			response.addCookie(userCookie);
 		}
-		return successResponse;
+		return this.response.successResponse();
 	}
 
 	@PatchMapping("/user/status/on")
 	public Response changeStatusOn(@LogInUser User user) {
 		userService.changeStatusOn(user);
-		return successResponse;
+		return response.successResponse();
 	}
 
 	@PatchMapping("/user/status/off")
 	public Response changeStatusOff(@LogInUser User user) {
 		userService.changeStatusOff(user);
-		return successResponse;
+		return response.successResponse();
 	}
 
 
