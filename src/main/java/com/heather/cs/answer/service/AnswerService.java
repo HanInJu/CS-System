@@ -27,7 +27,7 @@ public class AnswerService {
 		long counselId = answer.getCounselId();
 		String counselorId = user.getId();
 
-		Counsel counsel = getCounselChargedCounselor(counselId, counselorId);
+		Counsel counsel = getAssignedCounsel(counselId, counselorId);
 		if (counsel == null) {
 			throw new IllegalArgumentException("Not Privileged User for Counsel. counselId : " + counselId);
 		}
@@ -39,11 +39,11 @@ public class AnswerService {
 		updateCounsel(counsel);
 	}
 
-	public Counsel getCounselChargedCounselor(long counselId, String counselorId) {
+	public Counsel getAssignedCounsel(long counselId, String counselorId) {
 		Map<String, String> map = new HashMap<>();
 		map.put("counselId", String.valueOf(counselId));
 		map.put("counselorId", counselorId);
-		return counselMapper.selectCounselChargedCounselor(map);
+		return counselMapper.selectAssignedCounsel(map);
 	}
 
 	public void setCreatorAndModifier(Answer answer, String userId) {
