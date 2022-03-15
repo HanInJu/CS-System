@@ -4,7 +4,10 @@ import java.util.List;
 
 import com.heather.cs.category.dto.Category;
 import com.heather.cs.category.service.CategoryService;
+import com.heather.cs.response.Response;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,15 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryService categoryService;
+	private final CategoryService categoryService;
+	private final Response response;
 
-    @GetMapping("/category/{categoryId}/subcategory")
-    public List<Category> getSubcategory(@PathVariable long categoryId) {
-        return categoryService.getSubcategory(categoryId);
-    }
+	@GetMapping("/category/{categoryId}/subcategory")
+	public Response<List<Category>> getSubcategory(@PathVariable long categoryId) {
+		List<Category> subcategories = categoryService.getSubcategory(categoryId);
+		return response.withData(subcategories);
 
-    @GetMapping("/category/tree")
-    public Category getAllCategoryTree() {
-        return categoryService.getAllCategoryTree();
-    }
+	}
+
+	@GetMapping("/category/tree")
+	public Response<Category> getAllCategoryTree() {
+		Category category = categoryService.getAllCategoryTree();
+		return response.withData(category);
+	}
 }

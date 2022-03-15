@@ -1,6 +1,7 @@
 package com.heather.cs.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,37 +13,42 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
+import com.heather.cs.configuration.argumentresolver.UserArgumentResolver;
+import com.heather.cs.configuration.interceptor.AuthenticationInterceptor;
+import com.heather.cs.configuration.interceptor.ManagerPrivilegeInterceptor;
 
-import com.heather.cs.argumentresolver.UserArgumentResolver;
-import com.heather.cs.interceptor.AuthInterceptor;
-import com.heather.cs.user.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @Import({DatabaseConfiguration.class})
 @PropertySource("classpath:application.properties")
 @EnableWebMvc
 @ComponentScan({"com.heather.cs.*"})
+@RequiredArgsConstructor
 public class ApplicationConfiguration implements WebMvcConfigurer {
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new MappingJackson2HttpMessageConverter());
-    }
-	@Autowired
-	private UserMapper userMapper;
+	private final AuthenticationInterceptor authenticationInterceptor;
+	private final ManagerPrivilegeInterceptor managerPrivilegeInterceptor;
+	private final UserArgumentResolver userArgumentResolver;
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new UserArgumentResolver());
+		resolvers.add(userArgumentResolver);
 	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new AuthInterceptor(userMapper))
+		registry.addInterceptor(authenticationInterceptor)
+			.excludePathPatterns("/")
 			.excludePathPatterns("/user")
 			.excludePathPatterns("/logIn");
+		registry.addInterceptor(managerPrivilegeInterceptor)
+			.addPathPatterns("/counsels/**");
 	}
 
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(new MappingJackson2HttpMessageConverter());
+	}
 }
 

@@ -10,8 +10,8 @@ import com.heather.cs.category.mapper.CategoryMapper;
 import com.heather.cs.charger.ChargerComparableClass;
 import com.heather.cs.charger.dto.Charger;
 import com.heather.cs.charger.mapper.ChargerMapper;
-import com.heather.cs.code.dto.CounselStatus;
-import com.heather.cs.code.dto.UserIdentifier;
+import com.heather.cs.code.CounselStatus;
+import com.heather.cs.code.UserIdentifier;
 import com.heather.cs.counsel.dto.Counsel;
 import com.heather.cs.counsel.mapper.CounselMapper;
 
@@ -27,18 +27,16 @@ public class CounselService {
 
 	@Transactional
 	public void registerCounsel(Counsel counsel) {
-		if(!categoryMapper.selectExistsCategory(counsel.getCategoryId())) {
-			throw new IllegalArgumentException("Invalid Category Id : " + counsel.getCategoryId());
-		}
-		if(categoryMapper.selectExistsChildCategory(counsel.getCategoryId())) {
-			throw new IllegalArgumentException("The category is NOT a lowest category : categoryId = " + counsel.getCategoryId());
-		}
+		validateCategory(counsel.getCategoryId());
 
 		Charger counselor = chargerMapper.selectOneAvailableCounselor(counsel.getCategoryId());
+		if(counselor == null) {
+			throw new IllegalStateException("There are no Counselors available.");
+		}
 		counsel.setChargerId(counselor.getUserId());
 		counsel.setCreatorId(UserIdentifier.SYSTEM.toString());
 		counsel.setModifierId(UserIdentifier.SYSTEM.toString());
-		counsel.setStatus(CounselStatus.ASSIGNED.toString());
+		counsel.setStatus(CounselStatus.ASSIGNED);
 
 		counselMapper.insertCounsel(counsel);
 		counselMapper.insertCounselHistory(counsel.getId());
@@ -49,7 +47,7 @@ public class CounselService {
 		List<Counsel> counselList = getUnassignedCounselList(managerId);
 		List<Charger> counselorList = chargerMapper.selectAvailableCounselorList(managerId);
 
-		if(counselorList.size() == 0) {
+		if (counselorList.size() == 0) {
 			throw new IllegalStateException("There are no Counselors available.");
 		}
 
@@ -66,7 +64,7 @@ public class CounselService {
 			counselorQueue.add(currentCharger);
 		}
 
-		for(Counsel counsel : counselList) {
+		for (Counsel counsel : counselList) {
 			counselMapper.updateCounselCharger(counsel);
 			counselMapper.insertCounselHistory(counsel.getId());
 		}
@@ -96,8 +94,17 @@ public class CounselService {
 		return counselMapper.selectUnassignedCounselList(managerId);
 	}
 
-	public int getCounselsWithoutCharger(String managerId) {
+	public int countCounselsWithoutCharger(String managerId) {
 		return chargerMapper.selectCountUnassignedCounsels(managerId);
+	}
+
+	public void validateCategory(long categoryId) {
+		if (!categoryMapper.selectExistsCategory(categoryId)) {
+			throw new IllegalArgumentException("Invalid Category Id : " + categoryId);
+		}
+		if (categoryMapper.selectExistsChildCategory(categoryId)) {
+			throw new IllegalArgumentException("The category is NOT a lowest category : categoryId = " + categoryId);
+		}
 	}
 
 }

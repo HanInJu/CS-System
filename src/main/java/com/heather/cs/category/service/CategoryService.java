@@ -6,12 +6,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import com.heather.cs.category.dto.Category;
 import com.heather.cs.category.mapper.CategoryMapper;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,11 +21,11 @@ public class CategoryService {
 
     public List<Category> getSubcategory(long categoryId) {
         if(!categoryMapper.selectExistsCategory(categoryId)) {
-            throw new IllegalArgumentException("Invalid CategoryId : " + categoryId);
+            throw new IllegalArgumentException("Invalid Category (categoryId : " + categoryId + ")");
         }
 
         if(!categoryMapper.selectExistsChildCategory(categoryId)) {
-            throw new IllegalArgumentException("The category is a lowest category : categoryId = " + categoryId);
+            throw new IllegalArgumentException("The category is a lowest category (categoryId : " + categoryId + ")");
         }
 
         return categoryMapper.selectSubcategory(categoryId);

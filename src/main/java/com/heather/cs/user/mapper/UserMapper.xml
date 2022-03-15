@@ -25,12 +25,12 @@
         GROUP BY u.id
     </insert>
 
-    <update id="updateStatus" parameterType="map">
+    <update id="updateUserStatus" parameterType="user">
         UPDATE user
         SET status = #{status},
-            modifier_id = #{userId},
+            modifier_id = #{id},
             modified_at = NOW()
-        WHERE id = #{userId}
+        WHERE id = #{id}
     </update>
 
     <select id="selectActiveUser" parameterType="String" resultType="user">

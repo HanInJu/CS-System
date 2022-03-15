@@ -1,0 +1,25 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heather.cs.answer.mapper.AnswerMapper">
+
+    <insert id="insertAnswer" parameterType="answer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO answer(counsel_id, content, creator_id, modifier_id, created_at, modified_at)
+        VALUES (#{counselId}, #{content}, #{creatorId}, #{modifierId}, NOW(), NOW())
+    </insert>
+
+    <insert id="insertAnswerInHistory" parameterType="long">
+        INSERT INTO answer_history(answer_id, sequence, counsel_id, content, creator_id, created_at)
+        SELECT id,
+               (SELECT COUNT(answer_id)
+                FROM answer_history
+                WHERE answer_id = #{answerId}) + 1,
+               counsel_id,
+               content,
+               modifier_id,
+               modified_at
+        FROM answer
+        WHERE id = #{answerId}
+    </insert>
+
+</mapper>

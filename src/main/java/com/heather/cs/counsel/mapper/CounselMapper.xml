@@ -4,34 +4,62 @@
 <mapper namespace="com.heather.cs.counsel.mapper.CounselMapper">
 
     <insert id="insertCounsel" parameterType="counsel" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO counsel(category_id, charger_id, title, content, customer_name, customer_email, status, creator_id, modifier_id, created_at, modified_at)
-        VALUES(#{categoryId}, #{chargerId}, #{title}, #{content}, #{customerName}, #{customerEmail}, #{status}, #{creatorId}, #{modifierId}, NOW(), NOW())
+        INSERT INTO counsel(category_id, charger_id, title, content, customer_name, customer_email, status, creator_id,
+                            modifier_id, created_at, modified_at)
+        VALUES (#{categoryId}, #{chargerId}, #{title}, #{content}, #{customerName}, #{customerEmail}, #{status},
+                #{creatorId}, #{modifierId}, NOW(), NOW())
     </insert>
 
     <insert id="insertCounselHistory" parameterType="long">
-        INSERT INTO counsel_history(counsel_id, sequence, category_id, title, content, requestor_email, charger_id, status, creator_id, created_at)
-        SELECT c.id AS counsel_id,
+        INSERT INTO counsel_history(counsel_id, sequence, category_id, title, content, requestor_email, charger_id,
+                                    status, creator_id, created_at)
+        SELECT c.id                       AS counsel_id,
                (COUNT(ch.counsel_id)) + 1 AS sequence,
-               c.category_id, c.title, c.content, customer_email AS requestor_email, c.charger_id, c.status, modifier_id, modified_at
+               c.category_id,
+               c.title,
+               c.content,
+               customer_email             AS requestor_email,
+               c.charger_id,
+               c.status,
+               modifier_id,
+               modified_at
         FROM counsel AS c
-        LEFT JOIN counsel_history AS ch on c.id = ch.counsel_id
+                 LEFT JOIN counsel_history AS ch on c.id = ch.counsel_id
         WHERE c.id = #{counselId}
     </insert>
 
     <select id="selectUnassignedCounselList" parameterType="String" resultType="counsel">
         SELECT counsel.id, counsel.category_id
         FROM counsel
-        INNER JOIN charger c ON counsel.category_id = c.category_id
-        INNER JOIN user u ON u.id = c.user_id
-        WHERE u.id = #{managerId} AND counsel.charger_id IS NULL
+                 INNER JOIN charger c ON counsel.category_id = c.category_id
+                 INNER JOIN user u ON u.id = c.user_id
+        WHERE u.id = #{managerId}
+          AND counsel.charger_id IS NULL
     </select>
 
     <update id="updateCounselCharger" parameterType="counsel">
         UPDATE counsel
-        SET charger_id = #{chargerId},
+        SET charger_id  = #{chargerId},
             modifier_id = #{modifierId},
-            modified_at = now()
-        WHERE id = #{id} AND counsel.charger_id IS NULL
+            modified_at = NOW()
+        WHERE id = #{id}
+          AND counsel.charger_id IS NULL
+    </update>
+
+    <select id="selectAssignedCounsel" parameterType="map" resultType="counsel">
+        SELECT id, status, category_id
+        FROM counsel
+        WHERE charger_id = #{counselorId}
+          AND id = #{counselId}
+          AND status = 'ASSIGNED';
+    </select>
+
+    <update id="updateCounselStatus" parameterType="counsel">
+        UPDATE counsel
+        SET status      = #{status},
+            modifier_id = #{modifierId},
+            modified_at = NOW()
+        WHERE id = #{id}
     </update>
 
 </mapper>
