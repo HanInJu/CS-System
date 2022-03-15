@@ -18,7 +18,6 @@ import com.heather.cs.configuration.argumentresolver.UserArgumentResolver;
 import com.heather.cs.configuration.interceptor.AuthenticationInterceptor;
 import com.heather.cs.configuration.interceptor.ManagerPrivilegeInterceptor;
 import com.heather.cs.converter.DateConverter;
-import com.heather.cs.converter.DateFormatter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,7 +53,6 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(new DateConverter());
-		// registry.addFormatter(new DateFormatter());
 	}
 
 	@Override
