@@ -26,55 +26,49 @@ public class StatisticsController {
 
 	private final StatisticsService statisticsService;
 	private final CategoryService categoryService;
+	private final Response response;
 
 	@GetMapping("/statistics/counsel")
-	public ResponseEntity<Response<Object>> getCounselStatistics(@LogInUser User user,
+	public Response<List<Statistics>> getCounselStatistics(@LogInUser User user,
 		@RequestBody StatisticsRequestDto requestDto) {
-		if (!requestDto.isProperPeriod()) {
-			String message = "The duration must be less than 30 days. (startDate : "
-				+ requestDto.getStartDate()
-				+ ", endDate : "
-				+ requestDto.getEndDate()
-				+ ")";
-			return new ResponseEntity<>(
-				new Response<>(ResponseCode.NOT_PROPER_DURATION, message),
-				HttpStatus.BAD_REQUEST);
-		}
-		if (!categoryService.isExistCategory(requestDto.getCategoryId())) {
-			String message = "Invalid Category (categoryId : " + requestDto.getCategoryId() + ")";
-			return new ResponseEntity<>(
-				new Response<>(ResponseCode.NOT_VALID_CATEGORY, message),
-				HttpStatus.BAD_REQUEST);
-		}
+
+		validateDuration(requestDto);
+		validateCategory(requestDto.getCategoryId());
+
 		List<Statistics> statisticsList = statisticsService.getCounselStatistics(user, requestDto);
-		return new ResponseEntity<>(
-			new Response<>(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, statisticsList),
-			HttpStatus.OK);
+		return response.withData(statisticsList);
 	}
 
 	@GetMapping("/statistics/counselor")
-	public ResponseEntity<Response<List<Statistics>>> getCounselorStatistics(@LogInUser User user,
+	public Response<List<Statistics>> getCounselorStatistics(@LogInUser User user,
 		@RequestBody StatisticsRequestDto requestDto) {
-		if (!requestDto.isProperPeriod()) {
-			String message = "The duration must be less than 30 days. (startDate : "
-				+ requestDto.getStartDate()
-				+ ", endDate : "
-				+ requestDto.getEndDate()
-				+ ")";
-			return new ResponseEntity<>(
-				new Response<>(ResponseCode.NOT_PROPER_DURATION, message),
-				HttpStatus.BAD_REQUEST);
-		}
-		if (!categoryService.isExistCategory(requestDto.getCategoryId())) {
-			String message = "Invalid Category (categoryId : " + requestDto.getCategoryId() + ")";
-			return new ResponseEntity<>(
-				new Response<>(ResponseCode.NOT_VALID_CATEGORY, message),
-				HttpStatus.BAD_REQUEST);
-		}
+
+		validateDuration(requestDto);
+		validateCategory(requestDto.getCategoryId());
+
 		List<Statistics> statisticsList = statisticsService.getCounselorStatistics(user, requestDto);
-		return new ResponseEntity<>(
-			new Response<>(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, statisticsList),
-			HttpStatus.OK);
+		return response.withData(statisticsList);
+	}
+
+	public String makeDurationExceptionMessage(StatisticsRequestDto requestDto) {
+		return "The duration must be less than 30 days. (startDate : "
+			+ requestDto.getStartDate()
+			+ ", endDate : "
+			+ requestDto.getEndDate()
+			+ ")";
+	}
+
+	public void validateDuration(StatisticsRequestDto requestDto) {
+		if (!requestDto.isProperPeriod()) {
+			String message = makeDurationExceptionMessage(requestDto);
+			throw new IllegalArgumentException(message);
+		}
+	}
+
+	public void validateCategory(long categoryId) {
+		if (!categoryService.isExistCategory(categoryId)) {
+			throw new IllegalArgumentException("Invalid Category (categoryId : " + categoryId + ")");
+		}
 	}
 
 }
