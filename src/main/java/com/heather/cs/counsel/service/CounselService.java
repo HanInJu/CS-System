@@ -33,7 +33,7 @@ public class CounselService {
 		counsel.setChargerId(counselor.getUserId());
 		counsel.setCreatorId(UserIdentifier.SYSTEM.toString());
 		counsel.setModifierId(UserIdentifier.SYSTEM.toString());
-		counsel.setStatus(CounselStatus.ASSIGNED.toString());
+		counsel.setStatus(CounselStatus.ASSIGNED);
 
 		counselMapper.insertCounsel(counsel);
 		counselMapper.insertCounselHistory(counsel.getId());

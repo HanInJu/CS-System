@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import org.apache.ibatis.type.Alias;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.heather.cs.code.CounselStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +39,8 @@ public class Counsel {
 	@Size(max = 25, message = "Title must be 25 characters or less")
 	private String customerEmail;
 
-	private String status;
+	private CounselStatus status;
 	private String creatorId;
 	private String modifierId;
+
 }

@@ -58,7 +58,7 @@ public class AnswerService {
 
 	public void changeStatusAndModifier(Counsel counsel, CounselStatus status, String userId) {
 		counsel.setModifierId(userId);
-		counsel.setStatus(status.toString());
+		counsel.setStatus(status);
 	}
 
 	public void updateCounsel(Counsel counsel) {
