@@ -14,6 +14,7 @@ import com.heather.cs.response.Response;
 import com.heather.cs.response.code.ResponseCode;
 import com.heather.cs.response.message.ResponseMessage;
 import com.heather.cs.statistics.dto.CounselStatisticsDto;
+import com.heather.cs.statistics.dto.CounselorStatisticsDto;
 import com.heather.cs.statistics.dto.Statistics;
 import com.heather.cs.statistics.dto.StatisticsRequestDto;
 import com.heather.cs.statistics.service.StatisticsService;
@@ -28,7 +29,6 @@ public class StatisticsController {
 	private final StatisticsService statisticsService;
 	private final CategoryService categoryService;
 
-	private static final Response success = new Response();
 	private final Response response;
 
 	@GetMapping("/statistics/counsel")
@@ -41,11 +41,11 @@ public class StatisticsController {
 	}
 
 	@GetMapping("/statistics/counselor")
-	public Response<List<Statistics>> getCounselorStatistics(@RequestBody StatisticsRequestDto requestDto) {
+	public Response<List<CounselorStatisticsDto>> getCounselorStatistics(@RequestBody StatisticsRequestDto requestDto) {
 		validateDuration(requestDto);
 		validateCategory(requestDto.getCategoryId());
 
-		List<Statistics> statisticsList = statisticsService.getCounselorStatistics(requestDto);
+		List<CounselorStatisticsDto> statisticsList = statisticsService.getCounselorStatistics(requestDto);
 		return response.withData(statisticsList);
 	}
 

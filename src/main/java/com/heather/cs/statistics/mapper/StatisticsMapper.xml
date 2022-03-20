@@ -15,7 +15,7 @@
         GROUP BY date
     </select>
 
-    <select id="selectCounselorStatistics" parameterType="statisticsDto" resultType="statistics">
+    <select id="selectCounselorStatistics" parameterType="statisticsDto" resultType="counselorStatistics">
         SELECT DATE(c.created_at) AS date,
                c.charger_id AS counselorId,
                COUNT(a.id) AS completedCounsels,
