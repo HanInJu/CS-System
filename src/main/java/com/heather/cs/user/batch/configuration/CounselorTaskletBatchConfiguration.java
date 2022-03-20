@@ -30,7 +30,6 @@ public class CounselorTaskletBatchConfiguration {
 	public static final String COUNSELOR_OFF_STEP = "counselorStatusOffStep";
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
-	private final DataSource dataSource;
 	private final UserMapper userMapper;
 
 	@Bean
