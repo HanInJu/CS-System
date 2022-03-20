@@ -1,5 +1,7 @@
 package com.heather.cs.user.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.heather.cs.user.dto.User;
@@ -11,4 +13,6 @@ public interface UserMapper {
 	void insertUserHistory(String userId);
 	void updateUserStatus(User user);
 	User selectActiveUser(String userId);
+	List<User> selectStatusOnUser();
+	void updateUserStatusToOff(String userId);
 }

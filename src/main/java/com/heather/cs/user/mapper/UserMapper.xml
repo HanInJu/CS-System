@@ -48,4 +48,18 @@
         WHERE id = #{userId} AND use_yn = 'Y'
     </select>
 
+    <select id="selectStatusOnUser" resultType="user">
+        SELECT id, role, status
+        FROM user
+        WHERE (status = 'NORMAL'
+            OR status = 'AVAILABLE')
+           AND use_yn = 'Y'
+    </select>
+
+    <update id="updateUserStatusToOff" parameterType="String">
+        UPDATE user
+        SET status = IF(role = 'MANAGER', 'OFF', 'UNAVAILABLE')
+        WHERE id = #{userId}
+    </update>
+
 </mapper>

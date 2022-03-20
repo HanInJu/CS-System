@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.heather.cs.counsel.batch.configuration.DelayedCounselBatchConfiguration;
 import com.heather.cs.response.Response;
-import com.heather.cs.user.batch.configuration.CounselorBatchConfiguration;
+import com.heather.cs.user.batch.configuration.CounselorTaskletBatchConfiguration;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 public class BatchController {
 
 	private final JobLauncher jobLauncher;
-	private final CounselorBatchConfiguration counselorBatchConfiguration;
 	private final DelayedCounselBatchConfiguration delayedCounselBatchConfiguration;
+	private final CounselorTaskletBatchConfiguration taskletBatchConfiguration;
 	private static final Response success = new Response();
 
 	//배치는 하나하나 처리하지 않고 jobName을 받아서 처리한다.
@@ -26,7 +26,7 @@ public class BatchController {
 
 	@PatchMapping("/batch/user/status/off")
 	public Response runChangeUserStatusJob() throws Exception {
-		jobLauncher.run(counselorBatchConfiguration.counselorStatusOffJob(), new JobParameters());
+		jobLauncher.run(taskletBatchConfiguration.counselorStatusOffJob(), new JobParameters());
 		return success;
 	}
 
