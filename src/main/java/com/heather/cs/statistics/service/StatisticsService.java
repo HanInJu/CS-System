@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.heather.cs.statistics.dto.CounselStatisticsDto;
 import com.heather.cs.statistics.dto.Statistics;
 import com.heather.cs.statistics.dto.StatisticsRequestDto;
 import com.heather.cs.statistics.mapper.StatisticsMapper;
@@ -17,7 +18,7 @@ public class StatisticsService {
 
 	private final StatisticsMapper statisticsMapper;
 
-	public List<Statistics> getCounselStatistics(StatisticsRequestDto requestDto) {
+	public List<CounselStatisticsDto> getCounselStatistics(StatisticsRequestDto requestDto) {
 		return statisticsMapper.selectCounselStatistics(requestDto);
 	}
 

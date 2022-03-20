@@ -13,6 +13,7 @@ import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.response.Response;
 import com.heather.cs.response.code.ResponseCode;
 import com.heather.cs.response.message.ResponseMessage;
+import com.heather.cs.statistics.dto.CounselStatisticsDto;
 import com.heather.cs.statistics.dto.Statistics;
 import com.heather.cs.statistics.dto.StatisticsRequestDto;
 import com.heather.cs.statistics.service.StatisticsService;
@@ -26,14 +27,16 @@ public class StatisticsController {
 
 	private final StatisticsService statisticsService;
 	private final CategoryService categoryService;
+
+	private static final Response success = new Response();
 	private final Response response;
 
 	@GetMapping("/statistics/counsel")
-	public Response<List<Statistics>> getCounselStatistics(@RequestBody StatisticsRequestDto requestDto) {
+	public Response<List<CounselStatisticsDto>> getCounselStatistics(@RequestBody StatisticsRequestDto requestDto) {
 		validateDuration(requestDto);
 		validateCategory(requestDto.getCategoryId());
 
-		List<Statistics> statisticsList = statisticsService.getCounselStatistics(requestDto);
+		List<CounselStatisticsDto> statisticsList = statisticsService.getCounselStatistics(requestDto);
 		return response.withData(statisticsList);
 	}
 

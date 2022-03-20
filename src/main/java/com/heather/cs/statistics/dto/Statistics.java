@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @Alias("statistics")
 @NoArgsConstructor
 @AllArgsConstructor
