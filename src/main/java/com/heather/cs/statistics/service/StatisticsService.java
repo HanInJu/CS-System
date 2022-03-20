@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.heather.cs.statistics.dto.CounselStatisticsDto;
 import com.heather.cs.statistics.dto.CounselorStatisticsDto;
-import com.heather.cs.statistics.dto.Statistics;
 import com.heather.cs.statistics.dto.StatisticsRequestDto;
 import com.heather.cs.statistics.mapper.StatisticsMapper;
-import com.heather.cs.user.dto.User;
 
 import lombok.RequiredArgsConstructor;
 

@@ -11,6 +11,7 @@ import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.counsel.dto.Counsel;
 import com.heather.cs.counsel.service.CounselService;
 import com.heather.cs.response.Response;
+import com.heather.cs.response.code.ResponseCode;
 import com.heather.cs.response.message.ResponseMessage;
 import com.heather.cs.user.dto.User;
 
@@ -21,27 +22,27 @@ import lombok.RequiredArgsConstructor;
 public class CounselController {
 
 	private final CounselService counselService;
-	private final Response response;
+	private static final Response success = new Response();
 
 	@PostMapping("/counsel")
 	public Response registerCounsel(@Valid @RequestBody Counsel counsel) {
 		counselService.registerCounsel(counsel);
-		return response.successResponse();
+		return success;
 	}
 
 	@GetMapping("/counsels/assignment")
 	public Response assignCounsels(@LogInUser User user) {
 		counselService.assignCounsels(user.getId());
-		return response.successResponse();
+		return success;
 	}
 
 	@GetMapping("/counsels")
 	public Response countCounselsWithoutCharger(@LogInUser User user) {
 		int numberOfCounsels = counselService.countCounselsWithoutCharger(user.getId());
 		if (numberOfCounsels == 0) {
-			return response.messageResponse(ResponseMessage.ALL_ASSIGNED);
+			return new Response<>(ResponseCode.SUCCESS, ResponseMessage.ALL_ASSIGNED);
 		}
-		return response.withData(numberOfCounsels);
+		return new Response<>(numberOfCounsels);
 	}
 
 }

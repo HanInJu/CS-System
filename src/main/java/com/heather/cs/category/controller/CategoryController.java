@@ -17,18 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
 	private final CategoryService categoryService;
-	private final Response response;
 
 	@GetMapping("/category/{categoryId}/subcategory")
 	public Response<List<Category>> getSubcategory(@PathVariable long categoryId) {
 		List<Category> subcategories = categoryService.getSubcategory(categoryId);
-		return response.withData(subcategories);
+		return new Response<>(subcategories);
 
 	}
 
 	@GetMapping("/category/tree")
 	public Response<Category> getAllCategoryTree() {
 		Category category = categoryService.getAllCategoryTree();
-		return response.withData(category);
+		return new Response<>(category);
 	}
 }

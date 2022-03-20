@@ -2,23 +2,16 @@ package com.heather.cs.statistics.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.heather.cs.category.service.CategoryService;
-import com.heather.cs.configuration.annotation.LogInUser;
 import com.heather.cs.response.Response;
-import com.heather.cs.response.code.ResponseCode;
-import com.heather.cs.response.message.ResponseMessage;
 import com.heather.cs.statistics.dto.CounselStatisticsDto;
 import com.heather.cs.statistics.dto.CounselorStatisticsDto;
-import com.heather.cs.statistics.dto.Statistics;
 import com.heather.cs.statistics.dto.StatisticsRequestDto;
 import com.heather.cs.statistics.service.StatisticsService;
-import com.heather.cs.user.dto.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,15 +22,13 @@ public class StatisticsController {
 	private final StatisticsService statisticsService;
 	private final CategoryService categoryService;
 
-	private final Response response;
-
 	@GetMapping("/statistics/counsel")
 	public Response<List<CounselStatisticsDto>> getCounselStatistics(@RequestBody StatisticsRequestDto requestDto) {
 		validateDuration(requestDto);
 		validateCategory(requestDto.getCategoryId());
 
 		List<CounselStatisticsDto> statisticsList = statisticsService.getCounselStatistics(requestDto);
-		return response.withData(statisticsList);
+		return new Response<>(statisticsList);
 	}
 
 	@GetMapping("/statistics/counselor")
@@ -46,7 +37,7 @@ public class StatisticsController {
 		validateCategory(requestDto.getCategoryId());
 
 		List<CounselorStatisticsDto> statisticsList = statisticsService.getCounselorStatistics(requestDto);
-		return response.withData(statisticsList);
+		return new Response<>(statisticsList);
 	}
 
 	public String makeDurationExceptionMessage(StatisticsRequestDto requestDto) {
