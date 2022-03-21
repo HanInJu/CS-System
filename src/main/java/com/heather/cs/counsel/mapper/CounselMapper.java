@@ -15,4 +15,6 @@ public interface CounselMapper {
 	void updateCounselCharger(Counsel counsel);
 	Counsel selectAssignedCounsel(Map<String, String> map);
 	void updateCounselStatus(Counsel counsel);
+	List<Counsel> selectDelayedCounsel();
+	void updateCounselCategory();
 }

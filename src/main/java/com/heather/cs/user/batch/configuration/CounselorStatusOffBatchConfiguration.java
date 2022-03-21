@@ -1,7 +1,5 @@
 package com.heather.cs.user.batch.configuration;
 
-import javax.sql.DataSource;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -24,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 @Import(DatabaseConfiguration.class)
-public class CounselorTaskletBatchConfiguration {
+public class CounselorStatusOffBatchConfiguration {
 
 	public static final String COUNSELOR_OFF_JOB = "counselorStatusOffJob";
 	public static final String COUNSELOR_OFF_STEP = "counselorStatusOffStep";
