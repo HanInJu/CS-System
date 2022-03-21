@@ -3,12 +3,13 @@ package com.heather.cs.batch.controller;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.heather.cs.counsel.batch.configuration.DelayedCounselBatchConfiguration;
-import com.heather.cs.counsel.batch.configuration.TestBatchConfiguration;
 import com.heather.cs.counsel.batch.jobparameters.MoveCounselCategoryJobParameter;
 import com.heather.cs.response.Response;
 import com.heather.cs.user.batch.configuration.CounselorStatusOffBatchConfiguration;
@@ -21,7 +22,7 @@ public class BatchController {
 
 	private final JobLauncher jobLauncher;
 	private final CounselorStatusOffBatchConfiguration taskletBatchConfiguration;
-	private final TestBatchConfiguration testBatchConfiguration;
+	private final DelayedCounselBatchConfiguration delayedCounselBatchConfiguration;
 	private static final Response success = new Response();
 
 	//배치는 하나하나 처리하지 않고 jobName을 받아서 처리한다.
@@ -35,14 +36,18 @@ public class BatchController {
 	}
 
 	@PatchMapping("/batch/counsel/delay")
-	public Response testJob(@RequestBody MoveCounselCategoryJobParameter params) throws Exception {
-		System.out.println(params.getDate());
+	public Response runMoveCategoryJob(@RequestBody MoveCounselCategoryJobParameter params) throws Exception {
 		JobParameters jobParameters = new JobParametersBuilder()
 			.addString("date", params.getDate().toString())
 			.toJobParameters();
 
-		System.out.println(jobParameters.getString("date"));
-		jobLauncher.run(testBatchConfiguration.changeCategoryJob(), jobParameters);
+		jobLauncher.run(delayedCounselBatchConfiguration.changeCategoryJob(), jobParameters);
+		return success;
+	}
+
+	@GetMapping("/batch")
+	public Response test(@RequestParam String jobName) {
+		//name 받아서 해보기
 		return success;
 	}
 
