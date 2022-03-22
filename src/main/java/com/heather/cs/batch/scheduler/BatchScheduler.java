@@ -27,7 +27,7 @@ public class BatchScheduler {
 		try {
 			jobLauncher.run(counselorBatchConfiguration.counselorStatusOffJob(), new JobParameters());
 		} catch (Exception exception) {
-			log.error(exception.getMessage());
+			log.error("Fail to run changeUserStatusJob", exception);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class BatchScheduler {
 		try {
 			jobLauncher.run(delayedCounselBatchConfiguration.changeCategoryJob(), new JobParameters());
 		} catch (Exception exception) {
-			log.error(exception.getMessage());
+			log.error("Fail to run changeCategoryJob", exception);
 		}
 	}
 }

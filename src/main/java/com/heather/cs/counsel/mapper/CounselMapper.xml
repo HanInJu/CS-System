@@ -68,6 +68,7 @@
                  LEFT JOIN answer a on c.id = a.counsel_id
         WHERE c.created_at &lt; IF(ISNULL(a.created_at), #{date}, a.created_at - 3)
           AND c.status = 'UNASSIGNED'
+        ORDER BY c.id
     </select>
 
     <update id="updateCounselCategory">

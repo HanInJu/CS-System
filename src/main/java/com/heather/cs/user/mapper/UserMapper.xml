@@ -54,6 +54,7 @@
         WHERE (status = 'NORMAL'
             OR status = 'AVAILABLE')
            AND use_yn = 'Y'
+        ORDER BY id
     </select>
 
     <update id="updateUserStatusToOff" parameterType="String">

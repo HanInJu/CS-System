@@ -1,6 +1,9 @@
 package com.heather.cs.user.batch.configuration;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParametersIncrementer;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -11,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.heather.cs.configuration.DatabaseConfiguration;
+import com.heather.cs.user.batch.jobparameters.CounselorOffJobParametersValidator;
 import com.heather.cs.user.dto.User;
 import com.heather.cs.user.mapper.UserMapper;
 
@@ -22,9 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 @Import(DatabaseConfiguration.class)
-public class CounselorStatusOffBatchConfiguration {
+public class CounselorStatusOffBatchConfiguration implements Job {
 
-	public static final String COUNSELOR_OFF_JOB = "counselorStatusOffJob";
+	public static final String JOB_NAME = "counselorStatusOffJob";
 	public static final String COUNSELOR_OFF_STEP = "counselorStatusOffStep";
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
@@ -32,7 +36,7 @@ public class CounselorStatusOffBatchConfiguration {
 
 	@Bean
 	public Job counselorStatusOffJob() {
-		return jobBuilderFactory.get(COUNSELOR_OFF_JOB)
+		return jobBuilderFactory.get(JOB_NAME)
 			.start(counselorStatusOffStep())
 			.build();
 	}
@@ -50,5 +54,30 @@ public class CounselorStatusOffBatchConfiguration {
 			})
 			.allowStartIfComplete(true)
 			.build();
+	}
+
+	@Override
+	public String getName() {
+		return JOB_NAME;
+	}
+
+	@Override
+	public boolean isRestartable() {
+		return true;
+	}
+
+	@Override
+	public void execute(JobExecution jobExecution) {
+
+	}
+
+	@Override
+	public JobParametersIncrementer getJobParametersIncrementer() {
+		return null;
+	}
+
+	@Override
+	public JobParametersValidator getJobParametersValidator() {
+		return new CounselorOffJobParametersValidator();
 	}
 }

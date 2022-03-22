@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @NoArgsConstructor
-public class MoveCounselCategoryJobParameter {
+public class MoveCounselCategoryJobParameters {
 
-	private LocalDate date;
+	private LocalDate date = LocalDate.now();
 
 	@Value("#{jobParameters[date]}")
 	public void setCreateDate(String date) {
