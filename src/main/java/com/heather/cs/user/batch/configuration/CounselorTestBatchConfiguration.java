@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.heather.cs.batch.CustomJob;
 import com.heather.cs.configuration.DatabaseConfiguration;
 import com.heather.cs.user.batch.jobparameters.CounselorOffJobParametersValidator;
 import com.heather.cs.user.dto.User;
@@ -26,27 +27,28 @@ import lombok.extern.slf4j.Slf4j;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 @Import(DatabaseConfiguration.class)
-public class CounselorStatusOffBatchConfiguration implements Job {
+public class CounselorTestBatchConfiguration implements CustomJob {
 
-	public static final String JOB_NAME = "counselorStatusOffJob";
-	public static final String COUNSELOR_OFF_STEP = "counselorStatusOffStep";
+	public static final String JOB_NAME = "counselorOffJob";
+	public static final String STEP_NAME = "counselorStatusOffStep";
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
 	private final UserMapper userMapper;
 
-	@Bean
-	public Job counselorStatusOffJob() {
+	@Override
+	@Bean(JOB_NAME)
+	public Job job() {
 		return jobBuilderFactory.get(JOB_NAME)
-			.start(counselorStatusOffStep())
+			.start(step())
 			.build();
 	}
 
-	@Bean
-	public Step counselorStatusOffStep() {
-		return stepBuilderFactory.get(COUNSELOR_OFF_STEP)
+	@Override
+	@Bean(STEP_NAME)
+	public Step step() {
+		return stepBuilderFactory.get(STEP_NAME)
 			.tasklet((contribution, chunkContext) -> {
 				for(User x : userMapper.selectStatusOnUser()) {
-					System.out.println(x.getId());
 					userMapper.updateUserStatusToOff(x.getId());
 					userMapper.insertUserHistory(x.getId());
 				}
@@ -57,27 +59,7 @@ public class CounselorStatusOffBatchConfiguration implements Job {
 	}
 
 	@Override
-	public String getName() {
+	public String getJobName() {
 		return JOB_NAME;
-	}
-
-	@Override
-	public boolean isRestartable() {
-		return true;
-	}
-
-	@Override
-	public void execute(JobExecution jobExecution) {
-
-	}
-
-	@Override
-	public JobParametersIncrementer getJobParametersIncrementer() {
-		return null;
-	}
-
-	@Override
-	public JobParametersValidator getJobParametersValidator() {
-		return new CounselorOffJobParametersValidator();
 	}
 }

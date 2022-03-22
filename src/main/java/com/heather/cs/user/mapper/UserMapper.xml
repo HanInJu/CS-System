@@ -59,7 +59,9 @@
 
     <update id="updateUserStatusToOff" parameterType="String">
         UPDATE user
-        SET status = IF(role = 'MANAGER', 'OFF', 'UNAVAILABLE')
+        SET status = IF(role = 'MANAGER', 'OFF', 'UNAVAILABLE'),
+            modifier_id = 'BATCH_SYSTEM',
+            modified_at = NOW()
         WHERE id = #{userId}
     </update>
 

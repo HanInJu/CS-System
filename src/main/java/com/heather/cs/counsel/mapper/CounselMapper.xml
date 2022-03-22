@@ -51,7 +51,7 @@
         FROM counsel
         WHERE charger_id = #{counselorId}
           AND id = #{counselId}
-          AND status = 'ASSIGNED';
+          AND status = 'ASSIGNED'
     </select>
 
     <update id="updateCounselStatus" parameterType="counsel">
@@ -68,6 +68,7 @@
                  LEFT JOIN answer a on c.id = a.counsel_id
         WHERE c.created_at &lt; IF(ISNULL(a.created_at), #{date}, a.created_at - 3)
           AND c.status = 'UNASSIGNED'
+          AND c.category_id != 23
         ORDER BY c.id
     </select>
 

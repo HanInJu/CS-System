@@ -12,9 +12,6 @@ import org.mybatis.spring.batch.MyBatisPagingItemReader;
 import org.mybatis.spring.batch.builder.MyBatisBatchItemWriterBuilder;
 import org.mybatis.spring.batch.builder.MyBatisPagingItemReaderBuilder;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParametersIncrementer;
-import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -26,10 +23,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.heather.cs.batch.CustomJob;
 import com.heather.cs.configuration.DatabaseConfiguration;
 import com.heather.cs.counsel.batch.jobparameters.MoveCounselCategoryJobParameters;
 import com.heather.cs.counsel.dto.Counsel;
-import com.heather.cs.user.batch.jobparameters.CounselorOffJobParametersValidator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 @Import(DatabaseConfiguration.class)
-public class DelayedCounselBatchConfiguration implements Job {
+public class DelayedCounselBatchConfiguration implements CustomJob {
 
 	private final JobBuilderFactory jobBuilderFactory;
 	private final StepBuilderFactory stepBuilderFactory;
@@ -50,10 +47,11 @@ public class DelayedCounselBatchConfiguration implements Job {
 	private static final String STEP_NAME = "changeCategoryStep";
 	private static final int chunkSize = 1000;
 
-	@Bean
-	public Job changeCategoryJob() throws Exception {
+	@Bean(JOB_NAME)
+	@Override
+	public Job job() {
 		return jobBuilderFactory.get(JOB_NAME)
-			.start(changeCategoryStep())
+			.start(step())
 			.build();
 	}
 
@@ -63,23 +61,24 @@ public class DelayedCounselBatchConfiguration implements Job {
 		return new MoveCounselCategoryJobParameters();
 	}
 
-	@Bean
+
+	@Override
+	@Bean(STEP_NAME)
 	@JobScope
-	public Step changeCategoryStep() throws Exception {
+	public Step step() {
 		return stepBuilderFactory.get(STEP_NAME)
 			.<Counsel, Counsel>chunk(chunkSize)
-			.reader(delayedCounselReader())
-			.writer(compositeCounselItemWriter())
+			.reader(changeCategoryItemReader())
+			.writer(changeCategoryCompositeItemWriter())
 			.allowStartIfComplete(true)
 			.build();
 	}
 
 	@Bean
 	@StepScope
-	public MyBatisPagingItemReader<Counsel> delayedCounselReader() {
+	public MyBatisPagingItemReader<Counsel> changeCategoryItemReader() {
 		Map<String, Object> params = new HashMap<>();
 		params.put("date", jobParameters.getDate());
-		log.info(">>>>>>>>>>> date = {}", jobParameters.getDate());
 
 		return new MyBatisPagingItemReaderBuilder<Counsel>()
 			.sqlSessionFactory(sqlSessionFactory)
@@ -89,15 +88,15 @@ public class DelayedCounselBatchConfiguration implements Job {
 	}
 
 	@Bean
-	public CompositeItemWriter<Counsel> compositeCounselItemWriter() {
+	public CompositeItemWriter<Counsel> changeCategoryCompositeItemWriter() {
 		CompositeItemWriter<Counsel> writer = new CompositeItemWriter<>();
-		writer.setDelegates(Arrays.asList(delayedCounselWriter(), delayedCounselInHistoryWriter()));
+		writer.setDelegates(Arrays.asList(updateCounselCategoryWriter(), insertCounselCategoryInHistoryWriter()));
 		return writer;
 	}
 
 	@Bean
 	@StepScope
-	public MyBatisBatchItemWriter<Counsel> delayedCounselWriter() {
+	public MyBatisBatchItemWriter<Counsel> updateCounselCategoryWriter() {
 		return new MyBatisBatchItemWriterBuilder<Counsel>()
 			.sqlSessionFactory(sqlSessionFactory)
 			.statementId("com.heather.cs.counsel.mapper.CounselMapper.updateCounselCategory")
@@ -107,7 +106,7 @@ public class DelayedCounselBatchConfiguration implements Job {
 
 	@Bean
 	@StepScope
-	public MyBatisBatchItemWriter<Counsel> delayedCounselInHistoryWriter() {
+	public MyBatisBatchItemWriter<Counsel> insertCounselCategoryInHistoryWriter() {
 		return new MyBatisBatchItemWriterBuilder<Counsel>()
 			.sqlSessionFactory(sqlSessionFactory)
 			.statementId("com.heather.cs.counsel.mapper.CounselMapper.insertCounselHistoryInBatch")
@@ -116,27 +115,7 @@ public class DelayedCounselBatchConfiguration implements Job {
 	}
 
 	@Override
-	public String getName() {
+	public String getJobName() {
 		return JOB_NAME;
-	}
-
-	@Override
-	public boolean isRestartable() {
-		return true;
-	}
-
-	@Override
-	public void execute(JobExecution jobExecution) {
-
-	}
-
-	@Override
-	public JobParametersIncrementer getJobParametersIncrementer() {
-		return null;
-	}
-
-	@Override
-	public JobParametersValidator getJobParametersValidator() {
-		return new CounselorOffJobParametersValidator();
 	}
 }
