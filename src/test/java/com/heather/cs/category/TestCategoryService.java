@@ -27,8 +27,8 @@ public class TestCategoryService {
 	private CategoryMapper categoryMapper;
 
 	@Test
-	@DisplayName("Get Subcategory")
-	public void testGetSubCategory() {
+	@DisplayName("Get Subcategory") // 이것만 이름 뜨니까 더 자세한 이름으로 설정해주는 게
+	public void testGetSubCategory() { // 스펙을 규격화시킨다는 느낌으로 테스트케이스를 짜는 거고, 성공케이스보다 실패케이스를 짜는 게 의미가 있음
 		// given
 		long categoryId = 1;
 		Category subcategory = new Category();

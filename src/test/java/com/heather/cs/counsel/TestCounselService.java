@@ -71,7 +71,9 @@ public class TestCounselService {
 		Mockito.when(categoryMapper.selectExistsChildCategory(counsel.getCategoryId())).thenReturn(false);
 		Mockito.when(chargerMapper.selectOneAvailableCounselor(counsel.getCategoryId())).thenReturn(charger);
 		Mockito.doNothing().when(counselMapper).insertCounsel(counsel);
-		counsel.setId(1L);
+		counsel.setId(1L); // 크게 의미있는 건 아님  인위적으로 좀 값을 가하는 것도 괜찮고 사실 given에서 세팅해서 작ㅇ버해도 문제는 없음
+		// 몇 번 돌아갔는지, 분기 지켜서 하는 게 중요
+		// controller : Open API를 제공할 때는 짜기도 함
 		Mockito.doNothing().when(counselMapper).insertCounselHistory(counsel.getId());
 
 		// then
@@ -117,14 +119,21 @@ public class TestCounselService {
 		// when
 		Mockito.when(counselMapper.selectUnassignedCounselList(managerId)).thenReturn(unchargedCounselList);
 		Mockito.when(chargerMapper.selectAvailableCounselorList(managerId)).thenReturn(counselorList);
-		for (int i = 0; i < unchargedCounselList.size(); i++) {
+
+		for (int i = 0; i < unchargedCounselList.size(); i++) { //X
 			Counsel counselForUpdate = unchargedCounselList.get(i);
 			Mockito.doNothing().when(counselMapper).updateCounselCharger(counselForUpdate);
-			counselForUpdate.setId((long)i);
+			counselForUpdate.setId((long)i);// 여기는 등록하는 부분 아닌데 왜 이렇게 함?
 			Mockito.doNothing().when(counselMapper).insertCounselHistory(counselForUpdate.getId());
+
 		}
+		// doNothing()이면
+		// Mockito.anyObject 같은 값을 주면 되고, 사이즈만큼 실행됐는지 확인하면 됨
+		// 이런 식으로 일일이 하지는 않음
 
 		// then
 		Assertions.assertDoesNotThrow(() -> counselService.assignCounsels(managerId));
 	}
+
+	//
 }

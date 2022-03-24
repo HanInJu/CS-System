@@ -24,7 +24,7 @@ public class TestUserService {
 
 	@Test
 	@DisplayName("Test to register User")
-	public void testRegisterUser() {
+	public void testRegisterUser() { //분기 TC
 		// given
 		User user = new User();
 		user.setId("heather");

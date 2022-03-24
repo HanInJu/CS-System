@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 @Import(DatabaseConfiguration.class)
-public class CounselorTestBatchConfiguration implements CustomJob {
+public class CounselorTestBatchConfiguration implements CustomJob { // 이름 잘 설정하기
 
 	public static final String JOB_NAME = "counselorOffJob";
 	public static final String STEP_NAME = "counselorStatusOffStep";
@@ -45,7 +45,7 @@ public class CounselorTestBatchConfiguration implements CustomJob {
 
 	@Override
 	@Bean(STEP_NAME)
-	public Step step() {
+	public Step step() { // 따로 tasklet 만들어야 명확히 구분될
 		return stepBuilderFactory.get(STEP_NAME)
 			.tasklet((contribution, chunkContext) -> {
 				for(User x : userMapper.selectStatusOnUser()) {
