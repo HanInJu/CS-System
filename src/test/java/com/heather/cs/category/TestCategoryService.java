@@ -1,10 +1,9 @@
-package com.heather.cs.category.service;
+package com.heather.cs.category;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.heather.cs.category.dto.Category;
 import com.heather.cs.category.mapper.CategoryMapper;
+import com.heather.cs.category.service.CategoryService;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCategoryService {
