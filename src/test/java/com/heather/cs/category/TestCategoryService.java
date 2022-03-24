@@ -28,7 +28,7 @@ public class TestCategoryService {
 
 	@Test
 	@DisplayName("Get Subcategory")
-	void testGetSubCategory() {
+	public void testGetSubCategory() {
 		long categoryId = 1;
 		Category subcategory = new Category();
 		subcategory.setId(22L);
@@ -40,12 +40,12 @@ public class TestCategoryService {
 		Mockito.when(categoryMapper.selectSubcategory(categoryId)).thenReturn(subcategoryListForTest);
 
 		List<Category> subcategoryList = categoryService.getSubcategory(categoryId);
-		assertThat(subcategoryList.contains(subcategory));
+		assertThat(subcategoryList).contains(subcategory);
 	}
 
 	@Test
 	@DisplayName("Get All category in tree")
-	void testGetAllCategoryTree() {
+	public void testGetAllCategoryTree() {
 		Category rootCategoryForTest = new Category();
 		rootCategoryForTest.setId(1L);
 		rootCategoryForTest.setParentId(null);
@@ -58,14 +58,22 @@ public class TestCategoryService {
 		subcategory3.setId(3L);
 		subcategory3.setParentId(1L);
 
+		Category subcategory4 = new Category();
+		subcategory4.setId(4L);
+		subcategory4.setParentId(3L);
+
 		List<Category> categoryList = new ArrayList<>();
 		categoryList.add(rootCategoryForTest);
 		categoryList.add(subcategory2);
 		categoryList.add(subcategory3);
+		categoryList.add(subcategory4);
 
 		Mockito.when(categoryMapper.selectAllCategories()).thenReturn(categoryList);
 
 		Category rootCategory = categoryService.getAllCategoryTree();
-		assertThat(rootCategoryForTest.getId()).isEqualTo(rootCategory.getId());
+		assertThat(rootCategoryForTest.getId()).isEqualTo(rootCategory.getId()); 			// root
+		assertThat(rootCategory.getChildren()).contains(subcategory2);			 			// children
+		assertThat(rootCategory.getChildren()).contains(subcategory3);			 			// children
+		assertThat(rootCategory.getChildren().get(1).getChildren()).contains(subcategory4); // grand children
 	}
 }
