@@ -25,14 +25,17 @@ public class TestUserService {
 	@Test
 	@DisplayName("Test to register User")
 	public void testRegisterUser() {
+		// given
 		User user = new User();
 		user.setId("heather");
 		user.setPassword("qwerty");
 
+		// when
 		Mockito.when(userMapper.selectExistsUserId(user.getId())).thenReturn(false);
 		Mockito.doNothing().when(userMapper).insertUser(user);
 		Mockito.doNothing().when(userMapper).insertUserHistory(user.getId());
 
+		// then
 		Assertions.assertDoesNotThrow(() -> userService.registerUser(user));
 	}
 }

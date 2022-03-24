@@ -39,19 +39,23 @@ public class TestCounselService {
 	@Test
 	@DisplayName("Check category validation")
 	public void testValidateCategory() {
+		// given
 		Category category = new Category();
 		category.setId(1L);
 		category.setParentId(null);
 
+		// when
 		Mockito.when(categoryMapper.selectExistsCategory(category.getId())).thenReturn(true);
 		Mockito.when(categoryMapper.selectExistsChildCategory(category.getId())).thenReturn(false);
 
+		// then
 		Assertions.assertDoesNotThrow(() -> counselService.validateCategory(category.getId()));
 	}
 
 	@Test
 	@DisplayName("Register Counsel")
 	public void testRegisterCounsel() {
+		// given
 		Counsel counsel = new Counsel();
 		counsel.setCategoryId(22L);
 		counsel.setTitle("Counsel Title For Test");
@@ -62,6 +66,7 @@ public class TestCounselService {
 		Charger charger = new Charger();
 		charger.setUserId("Counselor");
 
+		// when
 		Mockito.when(categoryMapper.selectExistsCategory(counsel.getCategoryId())).thenReturn(true);
 		Mockito.when(categoryMapper.selectExistsChildCategory(counsel.getCategoryId())).thenReturn(false);
 		Mockito.when(chargerMapper.selectOneAvailableCounselor(counsel.getCategoryId())).thenReturn(charger);
@@ -69,12 +74,14 @@ public class TestCounselService {
 		counsel.setId(1L);
 		Mockito.doNothing().when(counselMapper).insertCounselHistory(counsel.getId());
 
+		// then
 		Assertions.assertDoesNotThrow(() -> counselService.registerCounsel(counsel));
 	}
 
 	@Test
 	@DisplayName("Assign uncharged counsel")
 	public void testAssignCounsel() {
+		// given
 		String managerId = "heather";
 
 		Counsel counsel1 = new Counsel();
@@ -107,6 +114,7 @@ public class TestCounselService {
 		counselorList.add(counselor1);
 		counselorList.add(counselor2);
 
+		// when
 		Mockito.when(counselMapper.selectUnassignedCounselList(managerId)).thenReturn(unchargedCounselList);
 		Mockito.when(chargerMapper.selectAvailableCounselorList(managerId)).thenReturn(counselorList);
 		for (int i = 0; i < unchargedCounselList.size(); i++) {
@@ -116,6 +124,7 @@ public class TestCounselService {
 			Mockito.doNothing().when(counselMapper).insertCounselHistory(counselForUpdate.getId());
 		}
 
+		// then
 		Assertions.assertDoesNotThrow(() -> counselService.assignCounsels(managerId));
 	}
 }

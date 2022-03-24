@@ -82,6 +82,7 @@ public class DelayedCounselBatchConfiguration implements CustomJob {
 
 		return new MyBatisPagingItemReaderBuilder<Counsel>()
 			.sqlSessionFactory(sqlSessionFactory)
+			.pageSize(chunkSize)
 			.queryId("com.heather.cs.counsel.mapper.CounselMapper.selectDelayedCounsel")
 			.parameterValues(params)
 			.build();
