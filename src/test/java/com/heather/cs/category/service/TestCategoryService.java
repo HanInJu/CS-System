@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class TestCategoryService {
 	private CategoryMapper categoryMapper;
 
 	@Test
-	@DisplayName("하위 카테고리 조회")
+	@DisplayName("Get Subcategory")
 	void testGetSubCategory() {
 		long categoryId = 1;
 		Category subcategory = new Category();
@@ -40,5 +41,31 @@ public class TestCategoryService {
 
 		List<Category> subcategoryList = categoryService.getSubcategory(categoryId);
 		assertThat(subcategoryList.contains(subcategory));
+	}
+
+	@Test
+	@DisplayName("Get All category in tree")
+	void testGetAllCategoryTree() {
+		Category rootCategoryForTest = new Category();
+		rootCategoryForTest.setId(1L);
+		rootCategoryForTest.setParentId(null);
+
+		Category subcategory2 = new Category();
+		subcategory2.setId(2L);
+		subcategory2.setParentId(1L);
+
+		Category subcategory3 = new Category();
+		subcategory3.setId(3L);
+		subcategory3.setParentId(1L);
+
+		List<Category> categoryList = new ArrayList<>();
+		categoryList.add(rootCategoryForTest);
+		categoryList.add(subcategory2);
+		categoryList.add(subcategory3);
+
+		Mockito.when(categoryMapper.selectAllCategories()).thenReturn(categoryList);
+
+		Category rootCategory = categoryService.getAllCategoryTree();
+		assertThat(rootCategoryForTest.getId()).isEqualTo(rootCategory.getId());
 	}
 }
