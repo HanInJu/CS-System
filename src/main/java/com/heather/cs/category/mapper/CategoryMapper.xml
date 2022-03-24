@@ -35,4 +35,10 @@
         FROM category
     </select>
 
+    <select id="selectCategoryId" parameterType="String" resultType="Long">
+        SELECT id
+        FROM category
+        WHERE name = #{categoryName}
+    </select>
+
 </mapper>

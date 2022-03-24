@@ -51,7 +51,7 @@
         FROM counsel
         WHERE charger_id = #{counselorId}
           AND id = #{counselId}
-          AND status = 'ASSIGNED';
+          AND status = 'ASSIGNED'
     </select>
 
     <update id="updateCounselStatus" parameterType="counsel">
@@ -61,5 +61,41 @@
             modified_at = NOW()
         WHERE id = #{id}
     </update>
+
+    <select id="selectDelayedCounsel" parameterType="map" resultType="counsel">
+        SELECT c.id, c.category_id, c.modifier_id, c.modified_at
+        FROM counsel c
+                 LEFT JOIN answer a on c.id = a.counsel_id
+        WHERE c.created_at &lt; IF(ISNULL(a.created_at), #{date}, a.created_at - 3)
+          AND c.status = 'UNASSIGNED'
+          AND c.category_id != 23
+        ORDER BY c.id
+    </select>
+
+    <update id="updateCounselCategory">
+        UPDATE counsel
+        SET category_id = 23,
+            modifier_id = 'BATCH_SYSTEM',
+            modified_at = NOW()
+        WHERE id = #{item.id}
+    </update>
+
+    <insert id="insertCounselHistoryInBatch">
+        INSERT INTO counsel_history(counsel_id, sequence, category_id, title, content, requestor_email, charger_id,
+                                    status, creator_id, created_at)
+        SELECT c.id                       AS counsel_id,
+               (COUNT(ch.counsel_id)) + 1 AS sequence,
+               c.category_id,
+               c.title,
+               c.content,
+               customer_email             AS requestor_email,
+               c.charger_id,
+               c.status,
+               modifier_id,
+               modified_at
+        FROM counsel AS c
+        LEFT JOIN counsel_history AS ch on c.id = ch.counsel_id
+        WHERE c.id = #{item.id}
+    </insert>
 
 </mapper>

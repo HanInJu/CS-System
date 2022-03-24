@@ -19,6 +19,10 @@ public class CategoryService {
 
     private final CategoryMapper categoryMapper;
 
+    public boolean isExistCategory(long categoryId) {
+        return categoryMapper.selectExistsCategory(categoryId);
+    }
+
     public List<Category> getSubcategory(long categoryId) {
         if(!categoryMapper.selectExistsCategory(categoryId)) {
             throw new IllegalArgumentException("Invalid Category (categoryId : " + categoryId + ")");

@@ -9,4 +9,10 @@ public final class ResponseCode {
 	public static final int ILLEGAL_STATE = 4002;
 
 	public static final int INTERNAL_SERVER_ERROR = 5000;
+
+	/* Category : 41XX */
+	public static final int NOT_VALID_CATEGORY = 4100;
+
+	/* Statistics : 45XX*/
+	public static final int NOT_PROPER_DURATION = 4500;
 }

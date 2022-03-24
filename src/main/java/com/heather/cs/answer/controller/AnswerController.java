@@ -22,12 +22,12 @@ import lombok.RequiredArgsConstructor;
 public class AnswerController {
 
 	private final AnswerService answerService;
-	private final Response response;
+	private static final Response success = new Response();
 
 	@PostMapping("/answer/counsel")
 	public Response registerAnswerForCounsel(@Valid @RequestBody Answer answer, @LogInUser User user) {
 		answerService.registerAnswerForCounsel(answer, user);
-		return response.successResponse();
+		return success;
 	}
 
 }

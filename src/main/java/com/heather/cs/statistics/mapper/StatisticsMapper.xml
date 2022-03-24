@@ -1,0 +1,32 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heather.cs.statistics.mapper.StatisticsMapper">
+
+    <select id="selectCounselStatistics" parameterType="statisticsDto" resultType="counselStatistics">
+        SELECT DATE(c.created_at) AS date,
+               COUNT(c.id) AS registeredCounsels,
+               COUNT(IF(DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &lt; 2, 1, NULL)) AS completedCounsels,
+               COUNT(IF((DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &gt; 2) || (ISNULL(a.created_at)), 1, NULL)) AS delayedCounsels
+        FROM counsel c
+        LEFT JOIN answer a ON c.id = a.counsel_id
+        WHERE c.category_id = #{categoryId}
+          AND c.created_at BETWEEN #{startDate} AND #{endDate}
+        GROUP BY date
+    </select>
+
+    <select id="selectCounselorStatistics" parameterType="statisticsDto" resultType="counselorStatistics">
+        SELECT DATE(c.created_at) AS date,
+               c.charger_id AS counselorId,
+               COUNT(a.id) AS completedCounsels,
+               COUNT(IF(DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &lt; 2, 1, NULL)) AS counselsProcessedNormally,
+               COUNT(IF((DATEDIFF(DATE(a.created_at), DATE(c.created_at)) &gt; 2) || (ISNULL(a.created_at)), 1, NULL)) AS delayedCounsels
+        FROM counsel c
+        LEFT JOIN answer a ON c.id = a.counsel_id
+        WHERE c.category_id = #{categoryId}
+          AND c.created_at BETWEEN #{startDate} AND #{endDate}
+        GROUP BY counselorId, date
+        ORDER BY counselsProcessedNormally DESC
+    </select>
+
+</mapper>
